@@ -1,0 +1,52 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg
+*.egg-info/
+dist/
+build/
+*.log
+
+# Django
+*.sqlite3
+db.sqlite3
+media/
+staticfiles/
+
+# VS Code
+.vscode/
+
+# Env
+.env
+.env.*
+
+# Virtual Environment
+venv/
+env/
+ENV/
+.venv/
+
+# MacOS
+.DS_Store
+
+# Windows
+Thumbs.db
+
+# Migrations
+**/migrations/*.pyc
+**/migrations/__pycache__/
+!**/migrations/__init__.py
+
+# MyPy / Coverage
+.mypy_cache/
+.pyright/
+.coverage
+
+# Pytest
+.pytest_cache/
+
+# JetBrains IDEs
+.idea/
+
+# Node (якщо буде фронтенд)
+node_modules/
