@@ -1,7 +1,11 @@
-from django.http import HttpResponse
+from django.http import JsonResponse
 from django.shortcuts import render
 
 # Create your views here.
 
 def ping(request):
-    return HttpResponse('pong')
+    data = {
+        "id": 1,
+        "name": "item"
+    }
+    return JsonResponse(data)
