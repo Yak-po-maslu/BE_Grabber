@@ -4,4 +4,5 @@ from django.urls import path, include
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('ads.urls')),
+    path('ping/', include('grabber_test.urls')),
 ]
