@@ -30,6 +30,8 @@ DEBUG = os.getenv("DEBUG") == "True"  #  config("DEBUG", default=True, cast=bool
 
 ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS").split(",") if os.getenv("ALLOWED_HOSTS") else []
 
+CORS_ALLOW_HEADERS = os.getenv("CORS_ALLOW_HEADERS").split(",") if os.getenv("CORS_ALLOW_HEADERS") else []
+CORS_ALLOW_ALL_ORIGINS = os.getenv("CORS_ALLOW_ALL_ORIGINS") == "True"
 
 # Application definition
 
@@ -43,9 +45,11 @@ INSTALLED_APPS = [
     'ads',
     'grabber_test',
     'rest_framework',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
