@@ -1,0 +1,9 @@
+bind = ["127.0.0.1:8001"]
+worker_class = "asyncio"
+workers = 17
+
+use_reloader = true
+reload_dir = "."
+
+accesslog = "-"
+loglevel = "debug"
