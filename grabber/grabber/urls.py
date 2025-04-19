@@ -5,4 +5,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('ads.urls')),
     path('ping/', include('grabber_test.urls')),
+    path('api/users/', include('users.urls')),
 ]

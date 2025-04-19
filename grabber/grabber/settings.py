@@ -13,6 +13,7 @@ import os
 from decouple import config
 from pathlib import Path
 from dotenv import load_dotenv
+from datetime import timedelta
 
 
 load_dotenv()
@@ -44,8 +45,27 @@ INSTALLED_APPS = [
     'ads',
     'grabber_test',
     'rest_framework',
+    'rest_framework_simplejwt',
     'corsheaders',
+    'users',
+
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ],
+}
+
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+    "AUTH_COOKIE": "access_token",
+    "AUTH_COOKIE_HTTP_ONLY": True,
+    "AUTH_COOKIE_SECURE": False,
+    "AUTH_COOKIE_SAMESITE": "Lax",
+}
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
