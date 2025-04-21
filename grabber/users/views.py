@@ -8,8 +8,44 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from asgiref.sync import sync_to_async
 from adrf.views import APIView as AsyncAPIView
 from django.contrib.auth import get_user_model
+from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
+
 
 User = get_user_model()
+
+
+class AsyncCookieViewRefresh(AsyncAPIView):
+    async def post(self, request):
+        refresh_token = request.COOKIES.get("refresh_token")
+
+        if not refresh_token:
+            return Response({'error': 'Refresh token not provided'}, status=status.HTTP_401_UNAUTHORIZED)
+
+        try:
+            refresh = RefreshToken(refresh_token)
+            access_token = str(refresh.access_token)
+        except TokenError as e:
+            return Response({'error': 'Invalid refresh token'}, status=status.HTTP_401_UNAUTHORIZED)
+
+        response = Response({'message': 'Access token refreshed'}, status=status.HTTP_200_OK)
+        response.set_cookie(
+            key='access_token',
+            value=access_token,
+            httponly=True,
+            samesite='Lax',
+            secure=False
+        )
+        return response
+
+class AsyncCookieViewLogout(AsyncAPIView):
+    async def post(self, request):
+        response = Response({'message': 'Logged out successfully'}, status=status.HTTP_200_OK)
+
+        response.delete_cookie('access_token')
+        response.delete_cookie('refresh_token')
+
+        return response
+
 
 class AsyncCookieViewLogin(AsyncAPIView):
     """
