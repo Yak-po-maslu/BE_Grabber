@@ -3,7 +3,7 @@ worker_class = "asyncio"
 workers = 17
 
 use_reloader = true
-reload_dir = "."
+reload_dir =["."]
 
 accesslog = "-"
 loglevel = "debug"

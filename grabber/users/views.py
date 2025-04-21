@@ -9,9 +9,24 @@ from asgiref.sync import sync_to_async
 from adrf.views import APIView as AsyncAPIView
 from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
+from rest_framework.permissions import IsAuthenticated
+from grabber.settings import JWT_SECURE, JWT_HTTP_ONLY, JWT_SAME_SITE
 
 
 User = get_user_model()
+
+
+
+class MeView(AsyncAPIView):
+    permission_classes = [IsAuthenticated]
+
+    async def get(self, request):
+        user = request.user
+        return Response({
+            "email": user.email,
+            "id": user.id,
+            "joined": user.date_joined,
+        })
 
 
 class AsyncCookieViewRefresh(AsyncAPIView):
@@ -31,9 +46,9 @@ class AsyncCookieViewRefresh(AsyncAPIView):
         response.set_cookie(
             key='access_token',
             value=access_token,
-            httponly=True,
-            samesite='Lax',
-            secure=False
+            httponly=JWT_HTTP_ONLY,
+            samesite=JWT_SAME_SITE,
+            secure=JWT_SECURE
         )
         return response
 
@@ -65,7 +80,7 @@ class AsyncCookieViewLogin(AsyncAPIView):
         # 3. Если пользователь не найден — ошибка
         if user is None:
             return Response(
-                {'error': 'Неверное имя пользователя или пароль'},
+                {'error': 'Incorrect username or password'},
                 status=status.HTTP_401_UNAUTHORIZED
             )
 
@@ -83,18 +98,18 @@ class AsyncCookieViewLogin(AsyncAPIView):
         response.set_cookie(
             key='access_token',
             value=access_token,
-            httponly=True,
-            samesite='Lax',
-            secure=False  # включить True при использовании HTTPS
+            httponly=JWT_HTTP_ONLY,
+            samesite=JWT_SAME_SITE,
+            secure=JWT_SECURE  # включить True при использовании HTTPS
         )
 
         # 🔁 refresh_token: используется для обновления access_token
         response.set_cookie(
             key='refresh_token',
             value=refresh_token,
-            httponly=True,
-            samesite='Lax',
-            secure=False
+            httponly=JWT_HTTP_ONLY,
+            samesite=JWT_SAME_SITE,
+            secure=JWT_SECURE
         )
 
         return response
@@ -104,7 +119,6 @@ class AsyncCookieViewRegister(AsyncAPIView):
     async def post(self, request):
         data = request.data
         email = data.get('email')
-        # username = data.get('email')
         password = data.get('password')
 
 
@@ -121,7 +135,6 @@ class AsyncCookieViewRegister(AsyncAPIView):
 
         # ✅ Создаём пользователя
         user = await sync_to_async(User.objects.create_user)(
-            #username=username,
             email=email,
             password=password,
         )
@@ -139,16 +152,16 @@ class AsyncCookieViewRegister(AsyncAPIView):
         response.set_cookie(
             key='access_token',
             value=access_token,
-            httponly=True,
-            samesite='Lax',
-            secure=False
+            httponly=JWT_HTTP_ONLY,
+            samesite=JWT_SAME_SITE,
+            secure=JWT_SECURE
         )
         response.set_cookie(
             key='refresh_token',
             value=refresh_token,
-            httponly=True,
-            samesite='Lax',
-            secure=False
+            httponly=JWT_HTTP_ONLY,
+            samesite=JWT_SAME_SITE,
+            secure=JWT_SECURE
         )
 
         return response

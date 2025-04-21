@@ -9,3 +9,4 @@ def ping(request):
         "name": "item"
     }
     return JsonResponse(data)
+

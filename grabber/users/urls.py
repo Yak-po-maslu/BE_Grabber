@@ -4,6 +4,7 @@ from .views import (
     AsyncCookieViewRegister,
     AsyncCookieViewRefresh,
     AsyncCookieViewLogout,
+    MeView
 )
 
 urlpatterns = [
@@ -11,4 +12,5 @@ urlpatterns = [
     path('register/', AsyncCookieViewRegister.as_view() , name='register'),
     path('refresh/', AsyncCookieViewRefresh.as_view(), name='refresh'),
     path('logout/', AsyncCookieViewLogout.as_view(), name='logout'),
+    path('me/', MeView.as_view(), name='me'),
 ]
