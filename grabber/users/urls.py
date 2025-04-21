@@ -1,9 +1,9 @@
 from django.urls import path
 
 
-from .views import AsyncCookieView
+from .views import AsyncCookieViewLogin, AsyncCookieViewRegister
 
 urlpatterns = [
-    path('login/', AsyncCookieView.login, name='login'),
-    path('register/', AsyncCookieView.register, name='register'),
+    path('login/', AsyncCookieViewLogin.as_view(), name='login'),
+    path('register/', AsyncCookieViewRegister.as_view() , name='register'),
 ]
