@@ -9,7 +9,7 @@ from asgiref.sync import sync_to_async
 from adrf.views import APIView as AsyncAPIView
 from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from grabber.settings import JWT_SECURE, JWT_HTTP_ONLY, JWT_SAME_SITE
 
 
@@ -63,6 +63,7 @@ class AsyncCookieViewLogout(AsyncAPIView):
 
 
 class AsyncCookieViewLogin(AsyncAPIView):
+    permission_classes = [AllowAny]
     """
     Асинхронный логин с установкой токенов в куки.
     """
@@ -116,6 +117,7 @@ class AsyncCookieViewLogin(AsyncAPIView):
 
 
 class AsyncCookieViewRegister(AsyncAPIView):
+    permission_classes = [AllowAny]
     async def post(self, request):
         data = request.data
         email = data.get('email')
