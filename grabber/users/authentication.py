@@ -5,7 +5,7 @@ from rest_framework_simplejwt.exceptions import TokenError
 class JWTAuthFromCookie(JWTAuthentication):
     def authenticate(self, request):
         # Пропускаем аутентификацию для пути логина и регистрации
-        if request.path in ['/api/users/login/', '/api/users/register/']:
+        if request.path in ['/api/login/', '/api/register/']:
             return None
 
         access_token = request.COOKIES.get("access_token")

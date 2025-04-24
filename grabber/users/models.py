@@ -21,11 +21,14 @@ class UserManager(BaseUserManager):
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True)
-    full_name = models.CharField(max_length=255, blank=True)
+    #full_name = models.CharField(max_length=255, blank=True)
+    first_name = models.CharField(max_length=255, default="Anonymous")
+    last_name = models.CharField(max_length=255, default="Anonymous")
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
-    phone_number = models.CharField(max_length=255, blank=True)
+    phone_number = models.CharField(max_length=255, blank=False, default='+38033333333')
     date_joined = models.DateTimeField(auto_now_add=True)
+    location = models.CharField(max_length=255, blank=True)
     # если хочешь ещё что-то, например:
     # phone = models.CharField(max_length=20, blank=True)
     # avatar = models.ImageField(upload_to='avatars/', blank=True)
