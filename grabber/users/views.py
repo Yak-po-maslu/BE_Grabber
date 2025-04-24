@@ -11,23 +11,27 @@ from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from grabber.settings import JWT_SECURE, JWT_HTTP_ONLY, JWT_SAME_SITE
+from .serializers import UserProfileSerializer
 
 
 User = get_user_model()
 
-
-
-class MeView(AsyncAPIView):
+class UserProfileView(AsyncAPIView):
     permission_classes = [IsAuthenticated]
 
     async def get(self, request):
-        user = request.user
-        return Response({
-            "email": user.email,
-            "id": user.id,
-            "joined": user.date_joined,
-        })
+        serializer = UserProfileSerializer(request.user)
+        return Response(serializer.data)
 
+    async def put(self, request):
+        # Асинхронна валідація і збереження
+        serializer = UserProfileSerializer(request.user, data=request.data, partial=True)
+        is_valid = await sync_to_async(serializer.is_valid)()
+        
+        if is_valid:
+            await sync_to_async(serializer.save)()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class AsyncCookieViewRefresh(AsyncAPIView):
     async def post(self, request):
@@ -51,7 +55,16 @@ class AsyncCookieViewRefresh(AsyncAPIView):
             secure=JWT_SECURE
         )
         return response
+class MeView(AsyncAPIView):
+    permission_classes = [IsAuthenticated]
 
+    async def get(self, request):
+        user = request.user
+        return Response({
+            "email": user.email,
+            "id": user.id,
+            "joined": user.date_joined,
+        })
 class AsyncCookieViewLogout(AsyncAPIView):
     async def post(self, request):
         response = Response({'message': 'Logged out successfully'}, status=status.HTTP_200_OK)
