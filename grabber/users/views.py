@@ -11,8 +11,7 @@ from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from grabber.settings import JWT_SECURE, JWT_HTTP_ONLY, JWT_SAME_SITE
-from .serializers import UserProfileSerializer
-
+from .serializers import UserProfileSerializer, UserRegisterSerializer
 
 User = get_user_model()
 
@@ -23,16 +22,20 @@ class UserProfileView(AsyncAPIView):
         serializer = UserProfileSerializer(request.user)
         return Response(serializer.data)
 
-    async def put(self, request):
-        # Асинхронна валідація і збереження
-        serializer = UserProfileSerializer(request.user, data=request.data, partial=True)
+    async def patch(self, request):
+        serializer = UserProfileSerializer(
+            request.user,
+            data=request.data,
+            partial=True  # частичное обновление
+        )
+
         is_valid = await sync_to_async(serializer.is_valid)()
-        
+
         if is_valid:
             await sync_to_async(serializer.save)()
             return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 class AsyncCookieViewRefresh(AsyncAPIView):
     async def post(self, request):
         refresh_token = request.COOKIES.get("refresh_token")
@@ -55,25 +58,33 @@ class AsyncCookieViewRefresh(AsyncAPIView):
             secure=JWT_SECURE
         )
         return response
-class MeView(AsyncAPIView):
-    permission_classes = [IsAuthenticated]
 
-    async def get(self, request):
-        user = request.user
-        return Response({
-            "email": user.email,
-            "id": user.id,
-            "joined": user.date_joined,
-        })
 class AsyncCookieViewLogout(AsyncAPIView):
     async def post(self, request):
         response = Response({'message': 'Logged out successfully'}, status=status.HTTP_200_OK)
 
-        response.delete_cookie('access_token')
-        response.delete_cookie('refresh_token')
+        # Устанавливаем "пустые" куки с коротким временем жизни (1 секунда)
+        response.set_cookie(
+            key='access_token',
+            value='',
+            max_age=1,
+            httponly=JWT_HTTP_ONLY,
+            samesite=JWT_SAME_SITE,
+            secure=JWT_SECURE,  # или True, если HTTPS
+            path='/'
+        )
+
+        response.set_cookie(
+            key='refresh_token',
+            value='',
+            max_age=1,
+            httponly=JWT_HTTP_ONLY,
+            samesite=JWT_SAME_SITE,
+            secure=JWT_SECURE,
+            path='/'
+        )
 
         return response
-
 
 class AsyncCookieViewLogin(AsyncAPIView):
     permission_classes = [AllowAny]
@@ -132,27 +143,14 @@ class AsyncCookieViewLogin(AsyncAPIView):
 class AsyncCookieViewRegister(AsyncAPIView):
     permission_classes = [AllowAny]
     async def post(self, request):
-        data = request.data
-        email = data.get('email')
-        password = data.get('password')
+        serializer = UserRegisterSerializer(data=request.data)
+        is_valid = await sync_to_async(serializer.is_valid)()
 
+        if not is_valid:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-        # 🚫 Проверка, существует ли такой пользователь
-        user_exists = await sync_to_async(User.objects.filter(email=email).exists)()
-        if user_exists:
-            return Response({'error': 'User with this email already existed!'}, status=status.HTTP_400_BAD_REQUEST)
-
-        # 🧠 Проверка валидности пароля (например, минимальная длина)
-        try:
-            await sync_to_async(validate_password)(password)
-        except ValidationError as e:
-            return Response({'error': e.messages}, status=status.HTTP_400_BAD_REQUEST)
-
-        # ✅ Создаём пользователя
-        user = await sync_to_async(User.objects.create_user)(
-            email=email,
-            password=password,
-        )
+        #Save user
+        user = await sync_to_async(serializer.save)()
 
         # 🔐 Генерируем JWT-токены
         refresh = RefreshToken.for_user(user)
@@ -178,6 +176,7 @@ class AsyncCookieViewRegister(AsyncAPIView):
             samesite=JWT_SAME_SITE,
             secure=JWT_SECURE
         )
+
 
         return response
 

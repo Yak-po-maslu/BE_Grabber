@@ -1,12 +1,14 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
+from django.core.exceptions import ValidationError
+import re
 
 User = get_user_model()
 
 class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['username', 'email', 'first_name', 'last_name']
+        fields = ['id','email', 'first_name', 'last_name','phone_number', 'date_joined', 'location']
         extra_kwargs = {
             'email': {'required': True},
         }
@@ -34,3 +36,84 @@ class UserProfileSerializer(serializers.ModelSerializer):
         if not value:
             raise serializers.ValidationError("Last name cannot be empty.")
         return value
+
+    def validate_location(self, value):
+        value = value.strip()
+        if not value:
+            raise serializers.ValidationError("Location cannot be empty.")
+        return value.title()
+
+
+
+
+
+class UserRegisterSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True, required=True)
+    email = serializers.EmailField(required=True)
+    first_name = serializers.CharField(required=True)
+    last_name = serializers.CharField(required=True)
+    phone_number = serializers.CharField(required=True)
+
+    class Meta:
+        model = User
+        fields = ['email', 'first_name', 'last_name', 'phone_number', 'password']
+
+    def validate_email(self, value):
+        value = value.strip().lower()
+        if User.objects.filter(email=value).exists():
+            raise serializers.ValidationError("This email is already in use.")
+        return value
+
+    def validate_first_name(self, value):
+        if not value.strip():
+            raise serializers.ValidationError("First name cannot be empty.")
+        return value
+
+    def validate_last_name(self, value):
+        if not value.strip():
+            raise serializers.ValidationError("Last name cannot be empty.")
+        return value
+
+    def validate_phone_number(self, value):
+
+        value = value.strip()
+
+        # Проверка формата: начинается с +, дальше только цифры
+        if not re.fullmatch(r'\+380\d{9}', value):
+            raise serializers.ValidationError(
+                "Phone number must be in format +380XXXXXXXXX (12 digits after +380, no spaces or symbols)."
+            )
+
+        return value
+
+    def validate_password(self, value):
+        errors = []
+
+        # 1. Минимальная длина
+        if len(value) < 8:
+            errors.append("Password must be at least 8 characters long.")
+
+        # 2. Заглавная буква
+        if not re.search(r'[A-Z]', value):
+            errors.append("Password must contain at least one uppercase letter.")
+
+        # 3. Строчная буква
+        if not re.search(r'[a-z]', value):
+            errors.append("Password must contain at least one lowercase letter.")
+
+        # 4. Цифра
+        if not re.search(r'[0-9]', value):
+            errors.append("Password must contain at least one digit.")
+
+        # 5. Только латинские символы
+        if not re.fullmatch(r'[A-Za-z0-9]+', value):
+            errors.append("Password must contain only Latin letters and digits.")
+
+        if errors:
+            raise serializers.ValidationError(errors)
+
+        return value
+
+    def create(self, validated_data):
+        return User.objects.create_user(**validated_data)
+
