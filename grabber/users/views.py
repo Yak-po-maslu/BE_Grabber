@@ -58,23 +58,7 @@ class AsyncCookieViewRefresh(AsyncAPIView):
             secure=JWT_SECURE
         )
         return response
-class MeView(AsyncAPIView):
-    permission_classes = [IsAuthenticated]
 
-    async def get(self, request):
-        user = request.user
-        return Response({
-            "email": user.email,
-            "id": user.id,
-            "joined": user.date_joined,
-            "first_name": user.first_name,
-            "last_name": user.last_name,
-            "is_staff": user.is_staff,
-            "is_superuser": user.is_superuser,
-            "is_active": user.is_active,
-            "phone_number": user.phone_number,
-
-        })
 class AsyncCookieViewLogout(AsyncAPIView):
     async def post(self, request):
         response = Response({'message': 'Logged out successfully'}, status=status.HTTP_200_OK)

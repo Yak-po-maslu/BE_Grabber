@@ -19,6 +19,5 @@ urlpatterns = [
     path('logout/', AsyncCookieViewLogout.as_view(), name='logout'),
 
     # 👤 User profile
-    path('me/', MeView.as_view(), name='me'),
     path('profile/', UserProfileView.as_view(), name='profile'),
 ]
