@@ -95,7 +95,6 @@ class AsyncCookieViewLogin(AsyncAPIView):
     async def post(self, request):
         # 1. Получаем данные из запроса
         data = request.data
-        #username = data.get('email')
         email = data.get('email')
         password = data.get('password')
 
