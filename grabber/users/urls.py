@@ -5,7 +5,6 @@ from .views import (
     AsyncCookieViewRegister,
     AsyncCookieViewRefresh,
     AsyncCookieViewLogout,
-    MeView,
     UserProfileView,
 )
 
