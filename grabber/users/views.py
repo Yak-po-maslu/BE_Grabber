@@ -67,7 +67,7 @@ class AsyncCookieViewLogout(AsyncAPIView):
         response.set_cookie(
             key='access_token',
             value='',
-            max_age=1,
+            max_age=0,
             httponly=JWT_HTTP_ONLY,
             samesite=JWT_SAME_SITE,
             secure=JWT_SECURE,  # или True, если HTTPS
@@ -77,7 +77,7 @@ class AsyncCookieViewLogout(AsyncAPIView):
         response.set_cookie(
             key='refresh_token',
             value='',
-            max_age=1,
+            max_age=0,
             httponly=JWT_HTTP_ONLY,
             samesite=JWT_SAME_SITE,
             secure=JWT_SECURE,
