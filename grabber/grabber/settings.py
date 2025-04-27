@@ -48,8 +48,8 @@ JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY")
 CSRF_TRUSTED_ORIGINS = os.getenv("CSRF_TRUSTED_ORIGINS").split(',') if os.getenv("CSRF_TRUSTED_ORIGINS") else []
 
 
-ACCESS_TOKEN_AGE = JWT_ACCESS_TOKEN_EXPIRATION_TIME * 60 # in minutes (for user login, register, refresh)
-REFRESH_TOKEN_AGE = JWT_REFRESH_TOKEN_EXPIRATION_TIME * 60 * 60 * 24 # in days
+ACCESS_TOKEN_AGE = int(JWT_ACCESS_TOKEN_EXPIRATION_TIME.total_seconds())# in minutes (for user login, register, refresh)
+REFRESH_TOKEN_AGE = int(JWT_REFRESH_TOKEN_EXPIRATION_TIME.total_seconds())  # in days
 
 # Application definition
 
