@@ -14,6 +14,9 @@ from decouple import config
 from pathlib import Path
 from dotenv import load_dotenv
 from datetime import timedelta
+import dj_database_url
+
+
 
 
 load_dotenv()
@@ -42,7 +45,7 @@ JWT_HTTP_ONLY=os.getenv("JWT_HTTP_ONLY") == "True"
 JWT_SAME_SITE = os.getenv("JWT_SAME_SITE") if os.getenv("JWT_SAME_SITE") else 'Lax'#Default 'Lax'
 JWT_SECURE = os.getenv("JWT_SECURE") == "True" # Https only if True
 JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY")
-
+CSRF_TRUSTED_ORIGINS = os.getenv("CSRF_TRUSTED_ORIGINS").split(',') if os.getenv("CSRF_TRUSTED_ORIGINS") else []
 
 
 # Application definition
@@ -122,10 +125,10 @@ WSGI_APPLICATION = 'grabber.wsgi.application'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': dj_database_url.config(default=os.getenv("DB_EXTERNAL_URL"))
+        #'ENGINE': 'django.db.backends.sqlite3',
+       # 'NAME': BASE_DIR / 'db.sqlite3',
+
 }
 
 

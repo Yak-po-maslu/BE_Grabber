@@ -1,6 +1,7 @@
+from datetime import datetime, timedelta
+from time import timezone
+
 from django.contrib.auth.models import update_last_login
-from django.contrib.auth.password_validation import validate_password
-from django.core.exceptions import ValidationError
 from rest_framework.response import Response
 from rest_framework import status
 from django.contrib.auth import authenticate
@@ -11,7 +12,7 @@ from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from grabber.settings import JWT_SECURE, JWT_HTTP_ONLY, JWT_SAME_SITE
-from .serializers import UserProfileSerializer, UserRegisterSerializer
+from .serializers import UserProfileSerializer, UserRegisterSerializer, UserLoginSerializer
 
 User = get_user_model()
 
@@ -62,12 +63,11 @@ class AsyncCookieViewRefresh(AsyncAPIView):
 class AsyncCookieViewLogout(AsyncAPIView):
     async def post(self, request):
         response = Response({'message': 'Logged out successfully'}, status=status.HTTP_200_OK)
-
         # Устанавливаем "пустые" куки с коротким временем жизни (1 секунда)
         response.set_cookie(
             key='access_token',
             value='',
-            max_age=1,
+            max_age=0,
             httponly=JWT_HTTP_ONLY,
             samesite=JWT_SAME_SITE,
             secure=JWT_SECURE,  # или True, если HTTPS
@@ -77,7 +77,7 @@ class AsyncCookieViewLogout(AsyncAPIView):
         response.set_cookie(
             key='refresh_token',
             value='',
-            max_age=1,
+            max_age=0,
             httponly=JWT_HTTP_ONLY,
             samesite=JWT_SAME_SITE,
             secure=JWT_SECURE,
@@ -94,10 +94,16 @@ class AsyncCookieViewLogin(AsyncAPIView):
 
     async def post(self, request):
         # 1. Получаем данные из запроса
-        data = request.data
-        #username = data.get('email')
-        email = data.get('email')
-        password = data.get('password')
+        serializer = UserLoginSerializer(data=request.data)
+        is_valid = await sync_to_async(serializer.is_valid)()
+
+        if not is_valid:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        validated_data = serializer.validated_data
+        email = validated_data['email']
+        password = validated_data['password']
+
 
         # 2. Аутентификация пользователя через sync_to_async
         user = await sync_to_async(authenticate)(email=email, password=password)
