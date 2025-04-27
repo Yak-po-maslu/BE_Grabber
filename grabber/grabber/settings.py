@@ -45,7 +45,7 @@ JWT_HTTP_ONLY=os.getenv("JWT_HTTP_ONLY") == "True"
 JWT_SAME_SITE = os.getenv("JWT_SAME_SITE") if os.getenv("JWT_SAME_SITE") else 'Lax'#Default 'Lax'
 JWT_SECURE = os.getenv("JWT_SECURE") == "True" # Https only if True
 JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY")
-
+CSRF_TRUSTED_ORIGINS = os.getenv("CSRF_TRUSTED_ORIGINS").split(',') if os.getenv("CSRF_TRUSTED_ORIGINS") else []
 
 
 # Application definition
