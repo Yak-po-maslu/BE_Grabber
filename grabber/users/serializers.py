@@ -44,6 +44,20 @@ class UserProfileSerializer(serializers.ModelSerializer):
         return value.title()
 
 
+class UserLoginSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    password = serializers.CharField()
+
+    def validate_email(self, value):
+        value = value.strip().lower()
+        if not value:
+            raise serializers.ValidationError("Email cannot be empty.")
+        return value
+
+    def validate_password(self, value):
+        if not value.strip():
+            raise serializers.ValidationError("Password cannot be empty.")
+        return value
 
 
 

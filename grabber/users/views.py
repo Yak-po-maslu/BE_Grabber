@@ -12,7 +12,7 @@ from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from grabber.settings import JWT_SECURE, JWT_HTTP_ONLY, JWT_SAME_SITE
-from .serializers import UserProfileSerializer, UserRegisterSerializer
+from .serializers import UserProfileSerializer, UserRegisterSerializer, UserLoginSerializer
 
 User = get_user_model()
 
@@ -94,9 +94,16 @@ class AsyncCookieViewLogin(AsyncAPIView):
 
     async def post(self, request):
         # 1. Получаем данные из запроса
-        data = request.data
-        email = data.get('email')
-        password = data.get('password')
+        serializer = UserLoginSerializer(data=request.data)
+        is_valid = await sync_to_async(serializer.is_valid)()
+
+        if not is_valid:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        validated_data = serializer.validated_data
+        email = validated_data['email']
+        password = validated_data['password']
+
 
         # 2. Аутентификация пользователя через sync_to_async
         user = await sync_to_async(authenticate)(email=email, password=password)
