@@ -23,14 +23,31 @@
       document.getElementById("output").textContent = JSON.stringify(data, null, 2);
     }
 
+     async function register() {
+      const res = await fetch(`${API_URL}/register/`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({
+            email:"test4@gmail.com",
+            password:"kiKrik1223123123badpass",
+            phone_number:"+380328972938",
+            first_name:"Kyrylo",
+            last_name:"Dmytrenko"
+        }),
+      });
+      const data = await res.json();
+      log(data);
+    }
+
     async function login() {
       const res = await fetch(`${API_URL}/login/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
         body: JSON.stringify({
-          email: "test@gmail.com",
-          password: "kirik1223123123badpass"
+           email:"test4@gmail.com",
+            password:"kiKrik1223123123badpass"
         }),
       });
       const data = await res.json();
@@ -46,7 +63,6 @@
       const data = await res.json();
       log(data);
     }
-
     async function refresh() {
       const res = await fetch(`${API_URL}/refresh/`, {
         method: "POST",

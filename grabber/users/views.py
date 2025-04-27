@@ -1,6 +1,7 @@
+from datetime import datetime, timedelta
+from time import timezone
+
 from django.contrib.auth.models import update_last_login
-from django.contrib.auth.password_validation import validate_password
-from django.core.exceptions import ValidationError
 from rest_framework.response import Response
 from rest_framework import status
 from django.contrib.auth import authenticate
@@ -62,7 +63,6 @@ class AsyncCookieViewRefresh(AsyncAPIView):
 class AsyncCookieViewLogout(AsyncAPIView):
     async def post(self, request):
         response = Response({'message': 'Logged out successfully'}, status=status.HTTP_200_OK)
-
         # Устанавливаем "пустые" куки с коротким временем жизни (1 секунда)
         response.set_cookie(
             key='access_token',
