@@ -13,6 +13,8 @@ from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from grabber.settings import JWT_SECURE, JWT_HTTP_ONLY, JWT_SAME_SITE
 from .serializers import UserProfileSerializer, UserRegisterSerializer, UserLoginSerializer
+from grabber.settings import ACCESS_TOKEN_AGE, REFRESH_TOKEN_AGE
+
 
 User = get_user_model()
 
@@ -56,7 +58,8 @@ class AsyncCookieViewRefresh(AsyncAPIView):
             value=access_token,
             httponly=JWT_HTTP_ONLY,
             samesite=JWT_SAME_SITE,
-            secure=JWT_SECURE
+            secure=JWT_SECURE,
+            max_age=ACCESS_TOKEN_AGE,
         )
         return response
 
@@ -131,7 +134,8 @@ class AsyncCookieViewLogin(AsyncAPIView):
             value=access_token,
             httponly=JWT_HTTP_ONLY,
             samesite=JWT_SAME_SITE,
-            secure=JWT_SECURE  # включить True при использовании HTTPS
+            secure=JWT_SECURE,  # включить True при использовании HTTPS
+            max_age=ACCESS_TOKEN_AGE,
         )
 
         # 🔁 refresh_token: используется для обновления access_token
@@ -140,7 +144,8 @@ class AsyncCookieViewLogin(AsyncAPIView):
             value=refresh_token,
             httponly=JWT_HTTP_ONLY,
             samesite=JWT_SAME_SITE,
-            secure=JWT_SECURE
+            secure=JWT_SECURE,
+            max_age=REFRESH_TOKEN_AGE,
         )
 
         return response
@@ -173,14 +178,16 @@ class AsyncCookieViewRegister(AsyncAPIView):
             value=access_token,
             httponly=JWT_HTTP_ONLY,
             samesite=JWT_SAME_SITE,
-            secure=JWT_SECURE
+            secure=JWT_SECURE,
+            max_age=ACCESS_TOKEN_AGE,
         )
         response.set_cookie(
             key='refresh_token',
             value=refresh_token,
             httponly=JWT_HTTP_ONLY,
             samesite=JWT_SAME_SITE,
-            secure=JWT_SECURE
+            secure=JWT_SECURE,
+            max_age=REFRESH_TOKEN_AGE,
         )
 
 
