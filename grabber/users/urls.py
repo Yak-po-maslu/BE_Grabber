@@ -6,6 +6,8 @@ from .views import (
     AsyncCookieViewRefresh,
     AsyncCookieViewLogout,
     UserProfileView,
+    AsyncForgotPasswordView,
+    AsyncResetPasswordView
 )
 
 app_name = 'users'  # дозволяє використовувати простір імен при реверсі
@@ -19,4 +21,7 @@ urlpatterns = [
 
     # 👤 User profile
     path('profile/', UserProfileView.as_view(), name='profile'),
+
+    path('forgot-password/', AsyncForgotPasswordView.as_view(), name='forgot-password'),
+    path('reset-password/', AsyncResetPasswordView.as_view(), name='reset-password'),
 ]

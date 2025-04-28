@@ -1,4 +1,6 @@
 # BE_Grabber  
+### Mini front
+python3 serve_frontend.py
 
 ### Test html server in local ###
 python3 -m http.server 5173 --bind 127.0.0.1

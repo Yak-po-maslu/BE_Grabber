@@ -1,5 +1,6 @@
+from django.core.mail import send_mail
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
+from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager, AbstractUser
 from django.db import models
 
 class UserManager(BaseUserManager):
@@ -37,6 +38,16 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     REQUIRED_FIELDS = []  # email уже обязателен, не дублируем
 
     objects = UserManager()
+
+    def email_user(self, subject, message, from_email=None, **kwargs):
+        """Send an email to this user."""
+        send_mail(
+            subject,
+            message,
+            from_email,
+            [self.email],
+            **kwargs,
+        )
 
     def __str__(self):
         return self.email

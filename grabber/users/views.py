@@ -12,11 +12,86 @@ from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from grabber.settings import JWT_SECURE, JWT_HTTP_ONLY, JWT_SAME_SITE
-from .serializers import UserProfileSerializer, UserRegisterSerializer, UserLoginSerializer
+from .models import CustomUser
+from .serializers.serializers import UserProfileSerializer, UserRegisterSerializer, UserLoginSerializer
 from grabber.settings import ACCESS_TOKEN_AGE, REFRESH_TOKEN_AGE
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
+from django.utils.encoding import force_bytes, force_str
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from .serializers.reset_password import UserResetSerializer
+from grabber.settings import FRONTEND_URL
+from typing import cast
 
+
+
+
+token_generator = PasswordResetTokenGenerator()
 
 User = get_user_model()
+
+class AsyncResetPasswordView(AsyncAPIView):
+    permission_classes = [AllowAny]
+
+    async def post(self, request):
+        uidb64 = request.data.get('uid')
+        token = request.data.get('token')
+        new_password = request.data.get('new_password')
+
+        if not all([uidb64, token, new_password]):
+            return Response({'error': 'Invalid data'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            uid = force_str(urlsafe_base64_decode(uidb64))
+            user = await sync_to_async(User.objects.get)(pk=uid)
+        except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+            return Response({'error': 'Invalid user'}, status=status.HTTP_400_BAD_REQUEST)
+
+        if not token_generator.check_token(user, token):
+            return Response({'error': 'Invalid or expired token'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Обновление пароля
+        user.set_password(new_password)
+        await sync_to_async(user.save)()
+
+        return Response({'message': 'Password has been reset successfully.'}, status=status.HTTP_200_OK)
+
+
+class AsyncForgotPasswordView(AsyncAPIView):
+    permission_classes = [AllowAny]
+
+    async def post(self, request):
+        #email = request.data.get('email')
+        serializer = UserResetSerializer(data=request.data)
+        is_valid = await sync_to_async(serializer.is_valid)()
+
+        if not is_valid:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        validated_data = serializer.validated_data
+        email = validated_data['email']
+
+        try:
+            user = cast(CustomUser, await sync_to_async(User.objects.get)(email=email))
+        except User.DoesNotExist:
+            return Response({'error': 'User with this email does not exist'}, status=status.HTTP_404_NOT_FOUND)
+
+        # Генерация токена
+        uid = urlsafe_base64_encode(force_bytes(user.pk))
+        token = token_generator.make_token(user)
+
+        reset_url = f"{FRONTEND_URL}/reset-password/{uid}/{token}"
+
+        # Отправка письма (асинхронно или sync_to_async)
+        subject = "Password Reset Request"
+        message = f"Use the link below to reset your password:\n{reset_url}"
+        await sync_to_async(user.email_user)(
+            subject=subject,
+            message=message,
+            from_email=None,
+        )
+
+        return Response({'message': 'Password reset link has been sent to your email.'}, status=status.HTTP_200_OK)
+
 
 class UserProfileView(AsyncAPIView):
 
