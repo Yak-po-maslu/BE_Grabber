@@ -20,7 +20,6 @@ User = get_user_model()
 
 class UserProfileView(AsyncAPIView):
     permission_classes = [IsAuthenticated]
-
     async def get(self, request):
         serializer = UserProfileSerializer(request.user)
         return Response(serializer.data)
