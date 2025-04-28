@@ -19,6 +19,7 @@ from grabber.settings import ACCESS_TOKEN_AGE, REFRESH_TOKEN_AGE
 User = get_user_model()
 
 class UserProfileView(AsyncAPIView):
+
     permission_classes = [IsAuthenticated]
     async def get(self, request):
         serializer = UserProfileSerializer(request.user)
