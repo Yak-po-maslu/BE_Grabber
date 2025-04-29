@@ -48,6 +48,19 @@ JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY")
 CSRF_TRUSTED_ORIGINS = os.getenv("CSRF_TRUSTED_ORIGINS").split(',') if os.getenv("CSRF_TRUSTED_ORIGINS") else []
 
 
+ACCESS_TOKEN_AGE = int(JWT_ACCESS_TOKEN_EXPIRATION_TIME.total_seconds())# in minutes (for user login, register, refresh)
+REFRESH_TOKEN_AGE = int(JWT_REFRESH_TOKEN_EXPIRATION_TIME.total_seconds())  # in days
+
+
+EMAIL_BACKEND = config("EMAIL_BACKEND")
+EMAIL_HOST = config("EMAIL_HOST")
+EMAIL_PORT = config("EMAIL_PORT", cast=int)
+EMAIL_USE_TLS = config("EMAIL_USE_TLS", cast=bool)
+EMAIL_HOST_USER = config("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD")
+DEFAULT_FROM_EMAIL = config("DEFAULT_FROM_EMAIL")
+
+FRONTEND_URL = config("FRONTEND_URL")
 # Application definition
 
 INSTALLED_APPS = [
