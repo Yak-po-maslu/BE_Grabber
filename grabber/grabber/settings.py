@@ -125,11 +125,18 @@ WSGI_APPLICATION = 'grabber.wsgi.application'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 DATABASES = {
-    'default': dj_database_url.config(default=os.getenv("DB_EXTERNAL_URL"))
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
+
+#DATABASES = {
+   # 'default': dj_database_url.config(default=os.getenv("DB_EXTERNAL_URL"))
         #'ENGINE': 'django.db.backends.sqlite3',
        # 'NAME': BASE_DIR / 'db.sqlite3',
 
-}
+#}
 
 
 # Password validation
