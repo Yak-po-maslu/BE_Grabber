@@ -33,7 +33,7 @@ ENV/
 Thumbs.db
 
 # Migrations
-**/migrations/
+#**/migrations/
 !**/migrations/__init__.py
 **/migrations/*.pyc
 **/migrations/__pycache__/
