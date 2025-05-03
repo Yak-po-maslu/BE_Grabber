@@ -8,10 +8,11 @@ User = get_user_model()
 class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id','email', 'first_name', 'last_name','phone_number', 'date_joined', 'location']
+        fields = ['id','email', 'first_name', 'last_name','phone_number', 'role', 'date_joined', 'location']
         extra_kwargs = {
             'email': {'required': True},
         }
+        read_only_fields = ['role']
 
     def validate_email(self, value):
         value = value.strip().lower()  # нормалізація email
@@ -67,10 +68,18 @@ class UserRegisterSerializer(serializers.ModelSerializer):
     first_name = serializers.CharField(required=True)
     last_name = serializers.CharField(required=True)
     phone_number = serializers.CharField(required=True)
+    role = serializers.ChoiceField(
+        choices=[
+            (User.Roles.BUYER, "Покупець"),
+            (User.Roles.SELLER, "Продавець"),
+        ],
+        required=False,
+        default=User.Roles.BUYER
+    )
 
     class Meta:
         model = User
-        fields = ['email', 'first_name', 'last_name', 'phone_number', 'password']
+        fields = ['email', 'first_name', 'last_name', 'phone_number', 'password','role']
 
     def validate_email(self, value):
         value = value.strip().lower()
@@ -128,6 +137,13 @@ class UserRegisterSerializer(serializers.ModelSerializer):
 
         return value
 
+    def validate_role(self, value):
+        forbidden_roles = ['admin', 'moderator']
+        if value in forbidden_roles:
+            raise serializers.ValidationError("You cannot assign this role.")
+        return value
+
     def create(self, validated_data):
         return User.objects.create_user(**validated_data)
+
 

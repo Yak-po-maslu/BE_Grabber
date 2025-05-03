@@ -21,8 +21,18 @@ class UserManager(BaseUserManager):
 
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
+    class Roles(models.TextChoices):
+        BUYER = "buyer", "Покупець"
+        SELLER = "seller", "Продавесь"
+        MODERATOR = "moderator", "Модератор"
+        ADMIN = "admin", "Адмін"
+
+    role = models.CharField(
+        max_length=20,
+        choices=Roles.choices,
+        default=Roles.BUYER,
+    )
     email = models.EmailField(unique=True)
-    #full_name = models.CharField(max_length=255, blank=True)
     first_name = models.CharField(max_length=255, default="Anonymous")
     last_name = models.CharField(max_length=255, default="Anonymous")
     is_active = models.BooleanField(default=True)
@@ -30,14 +40,13 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     phone_number = models.CharField(max_length=255, blank=False, default='+38033333333')
     date_joined = models.DateTimeField(auto_now_add=True)
     location = models.CharField(max_length=255, blank=True)
-    # если хочешь ещё что-то, например:
-    # phone = models.CharField(max_length=20, blank=True)
-    # avatar = models.ImageField(upload_to='avatars/', blank=True)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []  # email уже обязателен, не дублируем
 
     objects = UserManager()
+
+
 
     def email_user(self, subject, message, from_email=None, **kwargs):
         """Send an email to this user."""
