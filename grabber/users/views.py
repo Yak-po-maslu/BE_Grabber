@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 from time import timezone
-
+from .utils.getUserData import get_user_data
 from django.contrib.auth.models import update_last_login
 from rest_framework.response import Response
 from rest_framework import status
@@ -60,7 +60,6 @@ class AsyncForgotPasswordView(AsyncAPIView):
     permission_classes = [AllowAny]
 
     async def post(self, request):
-        #email = request.data.get('email')
         serializer = UserResetSerializer(data=request.data)
         is_valid = await sync_to_async(serializer.is_valid)()
 
@@ -223,6 +222,7 @@ class AsyncCookieViewLogin(AsyncAPIView):
             max_age=REFRESH_TOKEN_AGE,
         )
 
+        response.data = get_user_data(user)
         return response
 
 
@@ -265,6 +265,7 @@ class AsyncCookieViewRegister(AsyncAPIView):
             max_age=REFRESH_TOKEN_AGE,
         )
 
+        response.data = get_user_data(user)
 
         return response
 
