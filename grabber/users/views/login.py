@@ -3,6 +3,7 @@ from asgiref.sync import sync_to_async
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import update_last_login
 from rest_framework import status
+from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -10,6 +11,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from users.serializers.serializers import UserLoginSerializer
 from users.utils.getUserData import get_user_data
 from . import User, set_default_jwt_cookies
+from drf_yasg.utils import swagger_auto_schema
 
 
 class AsyncCookieViewLogin(AsyncAPIView):
@@ -18,6 +20,13 @@ class AsyncCookieViewLogin(AsyncAPIView):
     Асинхронный логин с установкой токенов в куки.
     """
 
+    @swagger_auto_schema(
+        method='post',
+        request_body=UserLoginSerializer,
+        responses={200: "Login Success. Data of login user"},
+
+    )
+    @action(detail=True, methods=['post'], url_path='login')
     async def post(self, request):
         # 1. Получаем данные из запроса
         serializer = UserLoginSerializer(data=request.data)

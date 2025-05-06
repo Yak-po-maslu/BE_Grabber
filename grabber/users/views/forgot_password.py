@@ -4,20 +4,29 @@ from adrf.views import APIView as AsyncAPIView
 from asgiref.sync import sync_to_async
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
+from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
 from . import User, FRONTEND_URL, token_generator
 from ..models import CustomUser
-from ..serializers.reset_password import UserResetSerializer
+from ..serializers.forgot_password import UserForgetPassword
 
 
 class AsyncForgotPasswordView(AsyncAPIView):
     permission_classes = [AllowAny]
 
+    @swagger_auto_schema(
+        method='post',
+        request_body=UserForgetPassword,
+        responses={200: "Password reset link has been sent to your email."},
+
+    )
+    @action(detail=True, methods=['post'], url_path='forgot_password')
     async def post(self, request):
-        serializer = UserResetSerializer(data=request.data)
+        serializer = UserForgetPassword(data=request.data)
         is_valid = await sync_to_async(serializer.is_valid)()
 
         if not is_valid:

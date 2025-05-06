@@ -1,9 +1,8 @@
 from rest_framework import serializers
-from django.contrib.auth import get_user_model
-from django.core.exceptions import ValidationError
+from ..views import User
 import re
 
-User = get_user_model()
+User = User
 
 class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
@@ -70,7 +69,7 @@ class UserLoginSerializer(serializers.Serializer):
 
 
 class UserRegisterSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(write_only=True, required=True)
+    password = serializers.CharField(write_only=True, required=True, min_length=8)
     email = serializers.EmailField(required=True)
     first_name = serializers.CharField(required=True)
     last_name = serializers.CharField(required=True)

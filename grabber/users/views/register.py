@@ -1,7 +1,9 @@
 from adrf.views import APIView as AsyncAPIView
 from asgiref.sync import sync_to_async
 from django.contrib.auth.models import update_last_login
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
+from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -11,8 +13,17 @@ from ..serializers.serializers import UserRegisterSerializer
 from ..utils.getUserData import get_user_data
 
 
+
 class AsyncCookieViewRegister(AsyncAPIView):
     permission_classes = [AllowAny]
+
+    @swagger_auto_schema(
+        method='post',
+        request_body=UserRegisterSerializer,
+        responses={201: "Sign up success!"},
+
+    )
+    @action(detail=True, methods=['post'], url_path='register')
     async def post(self, request):
         serializer = UserRegisterSerializer(data=request.data)
         is_valid = await sync_to_async(serializer.is_valid)()

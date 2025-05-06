@@ -1,7 +1,9 @@
 from tokenize import TokenError
 
 from adrf.views import APIView as AsyncAPIView
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
+from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 
@@ -9,6 +11,12 @@ from . import JWT_SECURE, JWT_HTTP_ONLY, JWT_SAME_SITE, ACCESS_TOKEN_AGE
 
 
 class AsyncCookieViewRefresh(AsyncAPIView):
+    @swagger_auto_schema(
+        method='post',
+        responses={200: "Access token refreshed"},
+
+    )
+    @action(detail=False, methods=['post'], url_path='refresh')
     async def post(self, request):
         refresh_token = request.COOKIES.get("refresh_token")
 
