@@ -1,11 +1,15 @@
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.exceptions import TokenError
+from django.urls import reverse
 
 
 class JWTAuthFromCookie(JWTAuthentication):
     def authenticate(self, request):
+
+        login_url = reverse("users:login")
+        register_url = reverse("users:register")
         # Пропускаем аутентификацию для пути логина и регистрации
-        if request.path in ['/api/login/', '/api/register/']:
+        if request.path in [login_url, register_url]:
             return None
 
         access_token = request.COOKIES.get("access_token")
