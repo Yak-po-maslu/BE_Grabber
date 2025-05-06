@@ -33,9 +33,10 @@ ENV/
 Thumbs.db
 
 # Migrations
+#**/migrations/
+!**/migrations/__init__.py
 **/migrations/*.pyc
 **/migrations/__pycache__/
-!**/migrations/__init__.py
 
 # MyPy / Coverage
 .mypy_cache/
