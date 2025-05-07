@@ -12,7 +12,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             'email': {'required': True},
         }
-        read_only_fields = ['role']
+        read_only_fields = ['role', 'date_joined', 'id']
 
     def validate_email(self, value):
         value = value.strip().lower()  # нормалізація email
@@ -46,6 +46,13 @@ class UserProfileSerializer(serializers.ModelSerializer):
 
 
 class UserLoginSerializer(serializers.Serializer):
+    class Meta:
+        model = User
+        fields = ['id','email', 'first_name', 'last_name','phone_number', 'role', 'date_joined', 'location']
+        extra_kwargs = {
+            'email': {'required': True},
+        }
+        read_only_fields = ['role', 'date_joined', 'id']
     email = serializers.EmailField()
     password = serializers.CharField()
 
