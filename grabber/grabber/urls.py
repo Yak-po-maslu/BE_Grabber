@@ -7,19 +7,20 @@ from drf_yasg import openapi
 from django.conf import settings
 from django.conf.urls.static import static
 
-
+from grabber.settings import BACKEND_URL
 
 schema_view = get_schema_view(
    openapi.Info(
-      title="Snippets API",
+      title="Grabber API",
       default_version='v1',
-      description="Test description",
+      description="API documentation",
       terms_of_service="https://www.google.com/policies/terms/",
       contact=openapi.Contact(email="contact@snippets.local"),
       license=openapi.License(name="BSD License"),
    ),
    public=True,
    permission_classes=(permissions.AllowAny,),
+   url=BACKEND_URL
 )
 
 urlpatterns = [
