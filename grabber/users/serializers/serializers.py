@@ -1,9 +1,8 @@
 from rest_framework import serializers
-from django.contrib.auth import get_user_model
-from django.core.exceptions import ValidationError
+from ..views import CustomUser
 import re
 
-User = get_user_model()
+User = CustomUser
 
 class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
@@ -19,10 +18,10 @@ class UserProfileSerializer(serializers.ModelSerializer):
         user = self.instance
 
         if user:
-            if User.objects.exclude(pk=user.pk).filter(email=value).exists():
+            if CustomUser.objects.exclude(pk=user.pk).filter(email=value).exists():
                 raise serializers.ValidationError("This email is already in use.")
         else:
-            if User.objects.filter(email=value).exists():
+            if CustomUser.objects.filter(email=value).exists():
                 raise serializers.ValidationError("This email is already in use.")
         return value
 
@@ -70,7 +69,7 @@ class UserLoginSerializer(serializers.Serializer):
 
 
 class UserRegisterSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(write_only=True, required=True)
+    password = serializers.CharField(write_only=True, required=True, min_length=8)
     email = serializers.EmailField(required=True)
     first_name = serializers.CharField(required=True)
     last_name = serializers.CharField(required=True)
@@ -90,7 +89,7 @@ class UserRegisterSerializer(serializers.ModelSerializer):
 
     def validate_email(self, value):
         value = value.strip().lower()
-        if User.objects.filter(email=value).exists():
+        if CustomUser.objects.filter(email=value).exists():
             raise serializers.ValidationError("This email is already in use.")
         return value
 
@@ -151,6 +150,6 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         return value
 
     def create(self, validated_data):
-        return User.objects.create_user(**validated_data)
+        return CustomUser.objects.create_user(**validated_data)
 
 
