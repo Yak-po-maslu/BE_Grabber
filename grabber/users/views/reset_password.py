@@ -9,7 +9,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from ..serializers.reset_password import ResetPasswordSerializer
 
-from . import User, token_generator
+from . import CustomUser, token_generator
 
 
 class AsyncResetPasswordView(AsyncAPIView):
@@ -37,8 +37,8 @@ class AsyncResetPasswordView(AsyncAPIView):
 
         try:
             uid = force_str(urlsafe_base64_decode(uidb64))
-            user = await sync_to_async(User.objects.get)(pk=uid)
-        except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+            user = await sync_to_async(CustomUser.objects.get)(pk=uid)
+        except (TypeError, ValueError, OverflowError, CustomUser.DoesNotExist):
             return Response({'error': 'Invalid user'}, status=status.HTTP_400_BAD_REQUEST)
 
         if not token_generator.check_token(user, token):

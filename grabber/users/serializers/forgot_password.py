@@ -1,8 +1,8 @@
 from rest_framework import serializers
-from ..views import User
+from ..views import CustomUser
 
 
-User = User
+User = CustomUser
 
 class UserForgetPassword(serializers.Serializer):
     email = serializers.EmailField()

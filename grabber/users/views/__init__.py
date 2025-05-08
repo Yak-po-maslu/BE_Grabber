@@ -5,10 +5,10 @@ from rest_framework.response import Response
 from grabber.settings import ACCESS_TOKEN_AGE, REFRESH_TOKEN_AGE, FRONTEND_URL
 from grabber.settings import JWT_SECURE, JWT_HTTP_ONLY, JWT_SAME_SITE
 
-FRONTEND_URL = FRONTEND_URL
+F_URL = FRONTEND_URL
 
 token_generator = PasswordResetTokenGenerator()
-User = get_user_model()
+CustomUser = get_user_model()
 
 def set_default_jwt_cookies(response: Response, access_token: str, refresh_token: str) -> Response:
     response.set_cookie(

@@ -10,7 +10,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 from users.serializers.serializers import UserLoginSerializer
 from users.utils.getUserData import get_user_data
-from . import User, set_default_jwt_cookies
+from . import CustomUser, set_default_jwt_cookies
 from drf_yasg.utils import swagger_auto_schema
 
 
@@ -55,7 +55,7 @@ class AsyncCookieViewLogin(AsyncAPIView):
         access_token = str(refresh.access_token)
         refresh_token = str(refresh)
 
-        await sync_to_async(update_last_login)(User, user)
+        await sync_to_async(update_last_login)(CustomUser, user)
 
         # 5. Создание ответа и установка токенов в куки
         response = Response({'message': 'Login successful!'}, status=status.HTTP_200_OK)

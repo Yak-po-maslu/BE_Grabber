@@ -8,7 +8,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from . import User, set_default_jwt_cookies
+from . import CustomUser, set_default_jwt_cookies
 from ..serializers.serializers import UserRegisterSerializer
 from ..utils.getUserData import get_user_data
 
@@ -39,7 +39,7 @@ class AsyncCookieViewRegister(AsyncAPIView):
         access_token = str(refresh.access_token)
         refresh_token = str(refresh)
 
-        await sync_to_async(update_last_login)(User, user)
+        await sync_to_async(update_last_login)(CustomUser, user)
 
         # 📤 Отправляем ответ с куками
         response = Response({'message': 'Sign up success!'}, status=status.HTTP_201_CREATED)

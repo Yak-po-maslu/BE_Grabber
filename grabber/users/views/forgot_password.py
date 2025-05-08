@@ -10,7 +10,7 @@ from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
-from . import User, FRONTEND_URL, token_generator
+from . import CustomUser, F_URL, token_generator
 from ..models import CustomUser
 from ..serializers.forgot_password import UserForgetPassword
 
@@ -36,15 +36,15 @@ class AsyncForgotPasswordView(AsyncAPIView):
         email = validated_data['email']
 
         try:
-            user = cast(CustomUser, await sync_to_async(User.objects.get)(email=email))
-        except User.DoesNotExist:
+            user = cast(CustomUser, await sync_to_async(CustomUser.objects.get)(email=email))
+        except CustomUser.DoesNotExist:
             return Response({'error': 'User with this email does not exist'}, status=status.HTTP_404_NOT_FOUND)
 
         # Генерация токена
         uid = urlsafe_base64_encode(force_bytes(user.pk))
         token = token_generator.make_token(user)
 
-        reset_url = f"{FRONTEND_URL}/reset-password/{uid}/{token}"
+        reset_url = f"{F_URL}/reset-password/{uid}/{token}"
 
         # Отправка письма (асинхронно или sync_to_async)
         subject = "Password Reset Request"
