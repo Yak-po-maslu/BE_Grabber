@@ -15,6 +15,9 @@ from pathlib import Path
 from dotenv import load_dotenv
 from datetime import timedelta
 import dj_database_url
+import json
+from google.oauth2 import service_account
+import base64
 
 
 
@@ -78,6 +81,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'users',
     'drf_yasg',
+    'storages',
 
 ]
 
@@ -137,6 +141,43 @@ WSGI_APPLICATION = 'grabber.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
+# --- распаковываем JSON-ключ из переменной окружения ---
+gcs_key_info = json.loads(
+    base64.b64decode(os.environ["GCS_SERVICE_ACCOUNT_KEY"]).decode()
+)
+GS_CREDENTIALS = service_account.Credentials.from_service_account_info(gcs_key_info)
+GS_PROJECT_ID  = gcs_key_info["project_id"]
+GS_BUCKET_NAME = os.getenv("GS_BUCKET_NAME")
+
+# --- конфигурация django-storages для Django ≥ 4.2 / 5.x ---
+STORAGES = {
+    "default": {
+        "BACKEND": "storages.backends.gcloud.GoogleCloudStorage",
+        "OPTIONS": {
+            "project_id":    GS_PROJECT_ID,
+            "credentials":   GS_CREDENTIALS,
+            "bucket_name":   GS_BUCKET_NAME,
+            # ниже — опциональные параметры:
+            # "default_acl":     "publicRead",
+            # "location":        "uploads",         # если нужно класть всё в подпапку
+            # "querystring_auth": False,             # для публичных URL без подписи
+        },
+    },
+
+     "staticfiles": {
+        "BACKEND": "storages.backends.gcloud.GoogleCloudStorage",
+         "OPTIONS": {
+            "project_id":    GS_PROJECT_ID,
+            "credentials":   GS_CREDENTIALS,
+             "bucket_name":   GS_BUCKET_NAME,
+            "location":      "static",
+            "default_acl":   "publicRead",
+        },
+     },
+}
+
+# как обращаться к вашим загруженным файлам
+MEDIA_URL = f"https://storage.googleapis.com/{GS_BUCKET_NAME}/"
 
 DATABASES = {
     'default': dj_database_url.config(default=os.getenv("DB_EXTERNAL_URL"))
@@ -180,8 +221,11 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-STATIC_URL = '/static/'
-STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+STATIC_URL = f"https://storage.googleapis.com/{GS_BUCKET_NAME}/static/"
+
+# задаём storage backend для collectstatic
+STATICFILES_STORAGE = "storages.backends.gcloud.GoogleCloudStorage"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
