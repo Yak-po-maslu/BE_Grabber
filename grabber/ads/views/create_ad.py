@@ -7,7 +7,7 @@ from rest_framework.response import Response
 
 from . import user_has_permissions
 from ..serializers.create_ad import CreateAdsSerializer
-from ..models import Ad
+
 
 
 
