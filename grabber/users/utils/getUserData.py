@@ -11,4 +11,5 @@ def get_user_data(user:CustomUser):
     user_data['location'] = user.location
     user_data['date_joined'] = user.date_joined
     user_data['last_login'] = user.last_login
+    user_data['user_photo'] = user.user_photo
     return user_data
