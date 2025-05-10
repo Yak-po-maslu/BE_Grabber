@@ -21,3 +21,7 @@ class Ad(models.Model):
 
     def __str__(self):
         return self.title
+
+class UploadedImageV1(models.Model):
+    image = models.ImageField(upload_to='uploads/')  # путь в бакете
+    uploaded_at = models.DateTimeField(auto_now_add=True)
