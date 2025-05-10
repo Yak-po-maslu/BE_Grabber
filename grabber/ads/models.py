@@ -19,6 +19,16 @@ class Ad(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='ads')
     created_at = models.DateTimeField(auto_now_add=True)
 
+    rejection_reason = models.TextField(blank=True, null=True)
+
+    moderated_by = models.ForeignKey(
+        'users.CustomUser',
+        null=True, blank=True,
+        on_delete=models.SET_NULL,
+        related_name='moderated_ads'
+    )
+    moderated_at = models.DateTimeField(null=True, blank=True)
+
     def __str__(self):
         return self.title
 
