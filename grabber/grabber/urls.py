@@ -7,26 +7,27 @@ from drf_yasg import openapi
 from django.conf import settings
 from django.conf.urls.static import static
 
-
+from grabber.settings import BACKEND_URL
 
 schema_view = get_schema_view(
    openapi.Info(
-      title="Snippets API",
+      title="Grabber API",
       default_version='v1',
-      description="Test description",
+      description="API documentation",
       terms_of_service="https://www.google.com/policies/terms/",
       contact=openapi.Contact(email="contact@snippets.local"),
       license=openapi.License(name="BSD License"),
    ),
    public=True,
    permission_classes=(permissions.AllowAny,),
+   url=BACKEND_URL
 )
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include('ads.urls')),
+    path('api/ads/', include('ads.urls')),
     path('ping/', include('grabber_test.urls')),
-    path('api/', include('users.urls')),
+    path('api/user/', include('users.urls')),
 
     path('swagger<format>/', schema_view.without_ui(cache_timeout=0), name='schema-json'),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
