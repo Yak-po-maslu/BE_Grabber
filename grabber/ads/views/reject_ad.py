@@ -34,7 +34,7 @@ class RejectAdAPIView(APIView):
             404: openapi.Response(description="Ad not found"),
         }
     )
-    async def patch(self, request, ad_id):
+    async def post(self, request, ad_id):
         ad = await sync_to_async(Ad.objects.filter(id=ad_id).first)()
         if not ad:
             return Response(status=status.HTTP_404_NOT_FOUND)
