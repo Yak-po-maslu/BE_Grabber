@@ -11,7 +11,8 @@ from .views import (
 )
 
 urlpatterns = [
-    path('', MainPageAdListView.as_view(), name="main-page-ads"),  # головний список оголошень
+    path('', index.index, name='ads_index'),
+    path('main-page/', MainPageAdListView.as_view(), name="main-page-ads"),
     path('create/', create_ad.AsyncCreateAdsView.as_view(), name='create-ad'),
     path('<int:ad_id>/add-image/', add_image_to_ads.AddImageToAdsAPIView.as_view(), name='add-image-to-ads'),
     path("moderation/", get_moderation.GetModerationView.as_view(), name='get_moderation'),
