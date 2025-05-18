@@ -8,18 +8,15 @@ from django.db.models import Q
 
 class MainPageAdListView(AsyncAPIView):
     async def get(self, request):
-        # Асинхронно витягуємо базовий queryset
-        base_qs = await sync_to_async(lambda: Ad.objects.filter(status="approved"))()
-
-        # Обробка пошуку
         search = request.query_params.get("search")
-        if search:
-            base_qs = await sync_to_async(
-                lambda: base_qs.filter(
-                    Q(title__icontains=search) | Q(description__icontains=search)
-                )
-            )()
 
-        # Сериалізація
-        serializer = AdSerializer(base_qs, many=True)
+        ads = await sync_to_async(
+            lambda: list(
+                Ad.objects.filter(status="approved").filter(
+                    Q(title__icontains=search) | Q(description__icontains=search)
+                ) if search else Ad.objects.filter(status="approved")
+            )
+        )()
+
+        serializer = AdSerializer(ads, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
