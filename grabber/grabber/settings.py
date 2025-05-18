@@ -164,9 +164,9 @@ STORAGES = {
             "credentials":   GS_CREDENTIALS,
             "bucket_name":   GS_BUCKET_NAME,
             # ниже — опциональные параметры:
-            # "default_acl":     "publicRead",
+            "default_acl":     "publicRead",
             # "location":        "uploads",         # если нужно класть всё в подпапку
-            # "querystring_auth": False,             # для публичных URL без подписи
+            "querystring_auth": False,             # для публичных URL без подписи
         },
     },
 
@@ -178,6 +178,7 @@ STORAGES = {
              "bucket_name":   GS_BUCKET_NAME,
             "location":      "static",
             "default_acl":   "publicRead",
+            "querystring_auth": False,
         },
      },
 }
