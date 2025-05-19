@@ -10,6 +10,7 @@ from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
+from services.send_email import send_email
 from . import CustomUser, F_URL, token_generator
 from ..models import CustomUser
 from ..serializers.forgot_password import UserForgetPassword
@@ -49,10 +50,7 @@ class AsyncForgotPasswordView(AsyncAPIView):
         # Отправка письма (асинхронно или sync_to_async)
         subject = "Password Reset Request"
         message = f"Use the link below to reset your password:\n{reset_url}"
-        await sync_to_async(user.email_user)(
-            subject=subject,
-            message=message,
-            from_email=None,
-        )
+
+        await send_email(user, subject, message)
 
         return Response({'message': 'Password reset link has been sent to your email.'}, status=status.HTTP_200_OK)
