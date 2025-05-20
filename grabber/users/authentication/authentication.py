@@ -9,12 +9,19 @@ class JWTAuthFromCookie(JWTAuthentication):
         login_url = reverse("users:login")
         register_url = reverse("users:register")
         refresh_url = reverse("users:refresh")
+        swagger_url = reverse("schema-swagger-ui")
         # Пропускаем аутентификацию для пути логина и регистрации
-        if request.path in [login_url, register_url, refresh_url]:
+        if request.path in [login_url, register_url, refresh_url, swagger_url]:
             return None
 
         access_token = request.COOKIES.get("access_token")
-        if access_token is None:
+        refresh_token = request.COOKIES.get("refresh_token")
+
+        if access_token is None and refresh_token is None:
+            return None
+
+
+        if access_token is None and refresh_token:
             raise AuthenticationFailed("Access token expired or not provided")
 
         try:
