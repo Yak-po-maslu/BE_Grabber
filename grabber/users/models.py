@@ -40,7 +40,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     phone_number = models.CharField(max_length=255, blank=False, default='+38033333333')
     date_joined = models.DateTimeField(auto_now_add=True)
     location = models.CharField(max_length=255, blank=True)
-    user_photo = models.JSONField(default=str)
+    user_photo = models.CharField(max_length=500, blank=True, default="")
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []  # email уже обязателен, не дублируем
