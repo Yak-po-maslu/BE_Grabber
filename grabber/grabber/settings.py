@@ -41,8 +41,8 @@ CORS_ALLOWED_ORIGINS = os.getenv("CORS_ALLOWED_ORIGINS").split(",") if os.getenv
 CORS_ALLOW_CREDENTIALS = os.getenv("CORS_ALLOW_CREDENTIALS") == "True"
 
 #JWT tokens
-JWT_REFRESH_TOKEN_EXPIRATION_TIME = timedelta(days=float(os.getenv("JWT_REFRESH_TOKEN_EXPIRATION_TIME")))
-JWT_ACCESS_TOKEN_EXPIRATION_TIME = timedelta(minutes=float(os.getenv("JWT_ACCESS_TOKEN_EXPIRATION_TIME")))
+JWT_REFRESH_TOKEN_EXPIRATION_TIME = timedelta(days=float(os.getenv("JWT_REFRESH_TOKEN_EXPIRATION_TIME"))) #days
+JWT_ACCESS_TOKEN_EXPIRATION_TIME = timedelta(minutes=float(os.getenv("JWT_ACCESS_TOKEN_EXPIRATION_TIME"))) #minutes
 
 JWT_HTTP_ONLY=os.getenv("JWT_HTTP_ONLY") == "True"
 JWT_SAME_SITE = os.getenv("JWT_SAME_SITE") if os.getenv("JWT_SAME_SITE") else 'Lax'#Default 'Lax'

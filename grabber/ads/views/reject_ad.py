@@ -7,6 +7,8 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
+from grabber import settings
+from services.send_email import send_email
 from users.permissions import permissions
 from ..models import Ad
 from ..serializers.ad import AdSerializer
@@ -35,9 +37,14 @@ class RejectAdAPIView(APIView):
         }
     )
     async def post(self, request, ad_id):
-        ad = await sync_to_async(Ad.objects.filter(id=ad_id).first)()
+        ad = await sync_to_async(
+            Ad.objects.select_related('user').filter(id=ad_id).first
+        )()
         if not ad:
             return Response(status=status.HTTP_404_NOT_FOUND)
+
+        if not ad.rejection_reason:
+            return Response({"detail":"rejection_reason is required!"},status=status.HTTP_400_BAD_REQUEST)
 
         if ad.status != "pending":
             return Response({"detail":f"Ad status is {ad.status}"},status=status.HTTP_403_FORBIDDEN)
@@ -49,6 +56,13 @@ class RejectAdAPIView(APIView):
 
         await sync_to_async(ad.save)()
         serializer = AdSerializer(ad)
+
+        title = f"Reject Ad with title {ad.title}"
+        message = f"""Ad with title {ad.title} has been rejected by moderator {request.user},
+        rejection reason: {request.data["rejection_reason"]}"""
+
+
+        await send_email(ad.user, title, message)
 
 
         return Response(serializer.data,status=status.HTTP_200_OK)

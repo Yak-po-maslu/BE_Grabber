@@ -7,9 +7,12 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
+from grabber import settings
+from services.send_email import send_email
 from users.permissions.permissions import IsModerator
 from ..models import Ad
 from ..serializers.ad import AdSerializer
+
 
 
 class ApproveAdAPIView(APIView):
@@ -25,7 +28,9 @@ class ApproveAdAPIView(APIView):
         }
     )
     async def post(self, request, ad_id):
-        ad = await sync_to_async(Ad.objects.filter(id=ad_id).first)()
+        ad = await sync_to_async(
+            Ad.objects.select_related('user').filter(id=ad_id).first
+        )()
 
         if not ad:
             return Response(status=status.HTTP_404_NOT_FOUND)
@@ -40,6 +45,11 @@ class ApproveAdAPIView(APIView):
         await sync_to_async(ad.save)()
 
         serializer = AdSerializer(ad)
+
+        title = f"Approved Ad with title {ad.title}"
+        message = f"""Ad with title {ad.title} has been approved"""
+
+        await send_email(ad.user, title, message)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
