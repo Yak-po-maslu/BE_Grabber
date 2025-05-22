@@ -1,6 +1,6 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from ads.views.ad_viewset import AdViewSet  # новий ViewSet з PATCH підтримкою
+from ads.views.ad_viewset import UpdateAdView  # новий ViewSet з PATCH підтримкою
 from ads.views.get_main_page import MainPageAdListView
 from .views import (
     index,
@@ -11,8 +11,8 @@ from .views import (
     reject_ad,
 )
 
-router = DefaultRouter()
-router.register(r'', AdViewSet, basename='ad')
+#router = DefaultRouter()
+#router.register(r'ads', AdViewSet, basename='ad')
 
 urlpatterns = [
     path('', index.index, name='ads_index'),
@@ -20,8 +20,9 @@ urlpatterns = [
     path('create/', create_ad.AsyncCreateAdsView.as_view(), name='create-ad'),
     path('<int:ad_id>/add-image/', add_image_to_ads.AddImageToAdsAPIView.as_view(), name='add-image-to-ads'),
     path("moderation/", get_moderation.GetModerationView.as_view(), name='get_moderation'),
+    path('<int:ad_id>/update/', UpdateAdView.as_view(), name='update-ad'),
     path('<int:ad_id>/approve/', approve_ad.ApproveAdAPIView.as_view(), name='approve-ad'),
     path('<int:ad_id>/reject/', reject_ad.RejectAdAPIView.as_view(), name='reject-ad'),
 ]
 
-urlpatterns += router.urls
+#urlpatterns += router.urls
