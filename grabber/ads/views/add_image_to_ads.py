@@ -13,7 +13,7 @@ from serializers.upload_image import UploadedImageSerializer
 
 
 class AddImageToAdsAPIView(APIView):
-    permission_classes = [IsAuthenticated, user_has_permissions.IsSellerOrAdminOrModerator]
+    permission_classes = [user_has_permissions.IsSellerOrAdminOrModerator]
     parser_classes = [MultiPartParser, FormParser]
 
     @swagger_auto_schema(
