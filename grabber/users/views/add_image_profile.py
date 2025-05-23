@@ -7,7 +7,7 @@ from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from ads.serializers.create_ad import CreateAdsSerializer
+
 from serializers.upload_image import UploadedImageSerializer
 from services.upload_one_image import UploadOneImage
 
