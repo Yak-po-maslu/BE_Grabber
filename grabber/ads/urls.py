@@ -1,7 +1,8 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from ads.views.update_ad import UpdateAdView  # новий ViewSet з PATCH підтримкою
+from ads.views.update_ad import UpdateAdView 
 from ads.views.get_main_page import MainPageAdListView
+from ads.views.get_ads import AdViewSet
 from .views import (
     index,
     create_ad,
@@ -12,7 +13,7 @@ from .views import (
 )
 
 urlpatterns = [
-    path('', index.index, name='ads_index'),
+    path('', AdViewSet.as_view({'get': 'list'}), name='ad-list'),
     path('main-page/', MainPageAdListView.as_view(), name="main-page-ads"),
     path('create/', create_ad.AsyncCreateAdsView.as_view(), name='create-ad'),
     path('<int:ad_id>/add-image/', add_image_to_ads.AddImageToAdsAPIView.as_view(), name='add-image-to-ads'),
