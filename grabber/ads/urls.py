@@ -3,7 +3,6 @@ from ads.views.update_ad import UpdateAdView
 from ads.views.get_main_page import MainPageAdListView
 from ads.views.get_ads import AdViewSet
 from .views import (
-    index,
     create_ad,
     add_image_to_ads,
     get_moderation,
