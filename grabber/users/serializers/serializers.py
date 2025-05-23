@@ -80,7 +80,7 @@ class UserRegisterSerializer(serializers.ModelSerializer):
             (User.Roles.SELLER, "Продавець"),
         ],
         required=False,
-        default=User.Roles.BUYER
+        default=User.Roles.SELLER
     )
 
     class Meta:

@@ -10,7 +10,9 @@ from .views import (
     reject_ad,
     delete_ad,
     get_owner_ads,
-    get_categories
+    get_categories,
+    create_category,
+    edit_category
 )
 
 urlpatterns = [
@@ -25,6 +27,10 @@ urlpatterns = [
     path('<int:ad_id>/delete/', delete_ad.DeleteAdView.as_view(), name='delete-ad'),
     path('my/', get_owner_ads.GetAdsAPIView.as_view(), name='owner_ads'),
     path('categories/', get_categories.GetCategoriesAPIView.as_view(), name='categories-list'),
+    path('categories/create/', create_category.CreateCategoryAPIView.as_view(), name='create-category'),
+    path('categories/<int:category_id>/edit/',
+         edit_category.EditCategoryAPIView.as_view(), name='edit-category'),
+
 
     
 ]

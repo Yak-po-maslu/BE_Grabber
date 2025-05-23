@@ -12,7 +12,7 @@ class JWTAuthFromCookie(JWTAuthentication):
         swagger_url = reverse("schema-swagger-ui")
         main_page_ads_url = reverse("main-page-ads")
         categories_url = reverse("categories-list")
-        filters_ads_url = reverse("ads-list")
+        filters_ads_url = reverse("ad-list")
 
         allowed_urls = [login_url,register_url,refresh_url,swagger_url,main_page_ads_url,categories_url,filters_ads_url]
 
