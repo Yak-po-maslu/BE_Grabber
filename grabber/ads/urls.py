@@ -23,7 +23,6 @@ urlpatterns = [
     path('<int:ad_id>/update/', UpdateAdView.as_view(), name='update-ad'),
     path('<int:ad_id>/approve/', approve_ad.ApproveAdAPIView.as_view(), name='approve-ad'),
     path('<int:ad_id>/reject/', reject_ad.RejectAdAPIView.as_view(), name='reject-ad'),
-    path('ads/', AdViewSet.as_view({'get': 'list'}), name='ad-list'),
     path('<int:ad_id>/delete/', delete_ad.DeleteAdView.as_view(), name='delete-ad'),
     path('my/', get_owner_ads.GetAdsAPIView.as_view(), name='owner_ads'),
  
