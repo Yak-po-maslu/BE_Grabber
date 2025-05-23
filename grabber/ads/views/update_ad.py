@@ -9,7 +9,7 @@ from rest_framework.parsers import JSONParser
 from users.permissions.permissions import IsSellerOrAdminOrModerator
 from users.models import CustomUser
 from ..models import Ad
-from grabber.ads.serializers.update_ad_serializer import UpdateAdSerializer
+from ..serializers.update_ad_serializer import UpdateAdSerializer
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 
