@@ -18,5 +18,5 @@ class MainPageAdListView(AsyncAPIView):
             )
         )()
 
-        serializer = AdSerializer(ads, many=True)
+        serializer = await sync_to_async(AdSerializer)(ads, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)

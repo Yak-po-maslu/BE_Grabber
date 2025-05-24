@@ -1,7 +1,11 @@
 from django.db import models
-
-from django.db import models
 from django.conf import settings
+
+class Category(models.Model):
+    name = models.CharField(max_length=100, unique=True, verbose_name="Category Name")
+
+    def __str__(self):
+        return self.name
 
 class Ad(models.Model):
     STATUS_CHOICES = [
@@ -18,7 +22,12 @@ class Ad(models.Model):
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='draft')
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='ads')
     created_at = models.DateTimeField(auto_now_add=True)
-    category = models.CharField(max_length=100, blank=True, null=True, db_index=True)  # ✅ поле категорії
+    category = models.ForeignKey( Category,
+                                  on_delete=models.SET_NULL,
+                                  null=True,
+                                  blank=True,
+                                  related_name='ads',
+                                  verbose_name="Category") # ✅ поле категорії
     rejection_reason = models.TextField(blank=True, null=True)
 
     moderated_by = models.ForeignKey(
@@ -31,6 +40,8 @@ class Ad(models.Model):
 
     def __str__(self):
         return self.title
+
+
 
 class UploadedImageV1(models.Model):
     image = models.ImageField(upload_to='uploads/')  # путь в бакете
