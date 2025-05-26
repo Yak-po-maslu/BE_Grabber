@@ -134,9 +134,18 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         if not re.search(r'[0-9]', value):
             errors.append("Password must contain at least one digit.")
 
-        # 5. Только латинские символы
-        if not re.fullmatch(r'[A-Za-z0-9]+', value):
-            errors.append("Password must contain only Latin letters and digits.")
+        # 5. Хотя бы один спецсимвол
+        special_symbols_pattern = r'[!@#$%^&*()_+\-=\[\]{};\'":\\|,.<>\/?]'
+        if not re.search(special_symbols_pattern, value):
+                errors.append(f"Password must contain at least one special character: {special_symbols_pattern}")
+
+        allowed = r'^[A-Za-z0-9!@#$%^&*()_+\-=\[\]{};\'":\\|,.<>\/?]+$'
+
+        # 6. Только латинские символы и спецсимволы
+        if not re.fullmatch(allowed, value):
+            errors.append(
+                "Password may contain only Latin letters, digits and the following special characters: !@#$%^&*()_+-=[]{};':\"\\|,.<>/?"
+            )
 
         if errors:
             raise serializers.ValidationError(errors)
