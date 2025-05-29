@@ -38,6 +38,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     phone_number = models.CharField(max_length=255, blank=False, default='+38033333333')
+    show_phone = models.BooleanField(default=False)
     date_joined = models.DateTimeField(auto_now_add=True)
     location = models.CharField(max_length=255, blank=True)
     user_photo = models.CharField(max_length=500, blank=True, default="")

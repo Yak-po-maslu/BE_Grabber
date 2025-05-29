@@ -5,13 +5,18 @@ import re
 User = CustomUser
 
 class UserProfileSerializer(serializers.ModelSerializer):
+    phone_number = serializers.SerializerMethodField()
     class Meta:
         model = User
-        fields = ['id','email', 'first_name', 'last_name','phone_number', 'role', 'date_joined', 'location','user_photo']
+        fields = ['id','email', 'first_name', 'last_name','phone_number','show_phone','role', 'date_joined', 'location','user_photo']
         extra_kwargs = {
             'email': {'required': True},
         }
         read_only_fields = ['role', 'date_joined', 'id']
+
+    def get_phone_number(self, obj):
+        # Показуємо номер лише якщо користувач дозволив
+        return obj.phone_number if obj.show_phone else None
 
     def validate_email(self, value):
         value = value.strip().lower()  # нормалізація email
@@ -85,7 +90,7 @@ class UserRegisterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['email', 'first_name', 'last_name', 'phone_number', 'password','role']
+        fields = ['email', 'first_name', 'last_name', 'phone_number','show_phone','password','role']
 
     def validate_email(self, value):
         value = value.strip().lower()
