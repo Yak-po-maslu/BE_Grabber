@@ -44,5 +44,5 @@ class Ad(models.Model):
 
 
 class UploadedImageV1(models.Model):
-    image = models.ImageField(upload_to='uploads/')  # путь в бакете
+    image = models.ImageField(upload_to='uploads/', )  # путь в бакете
     uploaded_at = models.DateTimeField(auto_now_add=True)

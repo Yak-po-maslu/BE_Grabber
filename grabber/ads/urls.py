@@ -12,7 +12,8 @@ from .views import (
     get_owner_ads,
     get_categories,
     create_category,
-    edit_category
+    edit_category,
+    get_one_ad
 )
 
 urlpatterns = [
@@ -30,6 +31,7 @@ urlpatterns = [
     path('categories/create/', create_category.CreateCategoryAPIView.as_view(), name='create-category'),
     path('categories/<int:category_id>/edit/',
          edit_category.EditCategoryAPIView.as_view(), name='edit-category'),
+    path('<int:ad_id>/', get_one_ad.GetOneAdView.as_view(), name='get-one-ad'),
 
 
 

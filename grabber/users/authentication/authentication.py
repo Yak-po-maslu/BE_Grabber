@@ -14,7 +14,9 @@ class JWTAuthFromCookie(JWTAuthentication):
         categories_url = reverse("categories-list")
         filters_ads_url = reverse("ad-list")
 
+
         allowed_urls = [login_url,register_url,refresh_url,swagger_url,main_page_ads_url,categories_url,filters_ads_url]
+        allowed_urls += 'api/ads/(?P<ad_id>[0-9]+)/\\Z'
 
         # Пропускаем аутентификацию для пути логина и регистрации
         if request.path in allowed_urls:
