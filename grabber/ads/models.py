@@ -29,6 +29,7 @@ class Ad(models.Model):
                                   related_name='ads',
                                   verbose_name="Category") # ✅ поле категорії
     rejection_reason = models.TextField(blank=True, null=True)
+    views = models.PositiveIntegerField(default=0)
 
     moderated_by = models.ForeignKey(
         'users.CustomUser',
@@ -46,3 +47,12 @@ class Ad(models.Model):
 class UploadedImageV1(models.Model):
     image = models.ImageField(upload_to='uploads/', )  # путь в бакете
     uploaded_at = models.DateTimeField(auto_now_add=True)
+
+class AdView(models.Model):
+    ad = models.ForeignKey(Ad, on_delete=models.CASCADE)
+    ip_address = models.GenericIPAddressField()
+    session_key = models.CharField(max_length=40, null=True, blank=True)
+    viewed_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('ad', 'ip_address')  # Один просмотр с IP

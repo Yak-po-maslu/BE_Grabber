@@ -9,6 +9,7 @@ class AdSerializer(serializers.ModelSerializer):
 
     category_name = serializers.CharField(source='category.name', read_only=True)
     category_id = serializers.IntegerField(source='category.id', read_only=True)
+    view_count = serializers.IntegerField(source='views', read_only=True)
 
 
     #
@@ -19,7 +20,7 @@ class AdSerializer(serializers.ModelSerializer):
         model = Ad
         fields = ['id', 'description', 'price', 'user_id',
                   'title', 'status', 'category_name', 'category_id', 'images', 'created_at','phone_number',
-                  'first_name', 'location']
+                  'first_name', 'location', 'view_count']
 
 
 

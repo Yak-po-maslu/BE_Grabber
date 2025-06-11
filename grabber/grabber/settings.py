@@ -83,6 +83,7 @@ INSTALLED_APPS = [
     'drf_yasg',
     'storages',
     'django_filters',
+    'channels',
 
 ]
 

@@ -1,3 +1,5 @@
+import re
+
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.exceptions import TokenError, AuthenticationFailed
 from django.urls import reverse
@@ -13,13 +15,26 @@ class JWTAuthFromCookie(JWTAuthentication):
         main_page_ads_url = reverse("main-page-ads")
         categories_url = reverse("categories-list")
         filters_ads_url = reverse("ad-list")
+        get_one_ad = 'api/ads/(?P<ad_id>[0-9]+)/\\Z'
 
 
-        allowed_urls = [login_url,register_url,refresh_url,swagger_url,main_page_ads_url,categories_url,filters_ads_url]
-        allowed_urls += 'api/ads/(?P<ad_id>[0-9]+)/\\Z'
+        allowed_urls = [
+                        login_url,
+                        register_url,
+                        refresh_url,
+                        swagger_url,
+                        main_page_ads_url,
+                        categories_url,
+                        filters_ads_url,
+                        get_one_ad,
+                        ]
+
+        def is_allowed_path(path):
+            return any(re.match(pattern, path) for pattern in allowed_urls)
+
 
         # Пропускаем аутентификацию для пути логина и регистрации
-        if request.path in allowed_urls:
+        if is_allowed_path(request.path):
             return None
 
         access_token = request.COOKIES.get("access_token")

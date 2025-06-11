@@ -9,6 +9,7 @@ from drf_yasg import openapi
 from ..models import Ad
 from ..serializers.ad import AdSerializer
 from ..serializers.create_ad import CreateAdsSerializer
+from ..services.increase_count_views_ip import increase_count_views_ip
 
 
 class GetOneAdView(APIView):
@@ -25,10 +26,14 @@ class GetOneAdView(APIView):
     })
     async def get(self, request, ad_id):
         try:
-             ad = await sync_to_async(Ad.objects.get)(id=ad_id)
+             ad = await sync_to_async(Ad.objects.select_related('user', 'category').get)(id=ad_id)
+             await increase_count_views_ip(request, ad_id, ad)
         except Ad.DoesNotExist:
             raise Http404
         result_data  = await sync_to_async(lambda: AdSerializer(instance=ad).data)()
+
+
+
 
         return Response({"ad": result_data}, status=status.HTTP_200_OK)
 
