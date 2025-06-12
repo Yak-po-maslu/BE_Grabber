@@ -4,8 +4,7 @@ import re
 
 User = CustomUser
 
-class UserProfileSerializer(serializers.ModelSerializer):
-    phone_number = serializers.SerializerMethodField()
+class UserEditProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id','email', 'first_name', 'last_name','phone_number','show_phone','role', 'date_joined', 'location','user_photo']
@@ -14,9 +13,23 @@ class UserProfileSerializer(serializers.ModelSerializer):
         }
         read_only_fields = ['role', 'date_joined', 'id']
 
-    def get_phone_number(self, obj):
-        # Показуємо номер лише якщо користувач дозволив
-        return obj.phone_number if obj.show_phone else None
+    def validate_show_phone(self, value):
+        if value in [True, False]:
+            return value
+        else:
+            raise serializers.ValidationError("True or False in field show_phone")
+
+    def validate_phone_number(self, value):
+
+        value = value.strip()
+
+        # Проверка формата: начинается с +, дальше только цифры
+        if not re.fullmatch(r'\+380\d{9}', value):
+            raise serializers.ValidationError(
+                "Phone number must be in format +380XXXXXXXXX (12 digits after +380, no spaces or symbols)."
+            )
+
+        return value
 
     def validate_email(self, value):
         value = value.strip().lower()  # нормалізація email
@@ -47,6 +60,20 @@ class UserProfileSerializer(serializers.ModelSerializer):
         if not value:
             raise serializers.ValidationError("Location cannot be empty.")
         return value.title()
+
+class UserProfileSerializer(serializers.ModelSerializer):
+    phone_number = serializers.SerializerMethodField()
+    class Meta:
+        model = User
+        fields = ['id','email', 'first_name', 'last_name','phone_number','show_phone','role', 'date_joined', 'location','user_photo']
+        extra_kwargs = {
+            'email': {'required': True},
+        }
+        read_only_fields = ['role', 'date_joined', 'id']
+
+    def get_phone_number(self, obj):
+        # Показуємо номер лише якщо користувач дозволив
+        return obj.phone_number if obj.show_phone else None
 
 
 class UserLoginSerializer(serializers.Serializer):

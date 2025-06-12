@@ -7,7 +7,9 @@ from ads.configs.ad_view_config import AdViewConfig  # імпортуємо но
 
 class AdViewSet(viewsets.ModelViewSet):  # <-- замінили ReadOnlyModelViewSet
     serializer_class = AdSerializer
-    queryset = Ad.objects.all()
+
+    def get_queryset(self):
+        return Ad.objects.select_related('user', 'category')
 
    # Фільтри, пошук, сортування винесені в конфіг
     filter_backends = AdViewConfig.filter_backends

@@ -12,14 +12,15 @@ from .views import (
     get_owner_ads,
     get_categories,
     create_category,
-    edit_category
+    edit_category,
+    get_one_ad
 )
 
 urlpatterns = [
     path('', AdViewSet.as_view({'get': 'list'}), name='ad-list'),
     path('main-page/', MainPageAdListView.as_view(), name="main-page-ads"),
     path('create/', create_ad.AsyncCreateAdsView.as_view(), name='create-ad'),
-    path('<int:ad_id>/add-image/', add_image_to_ads.AddImageToAdsAPIView.as_view(), name='add-image-to-ads'),
+    #path('<int:ad_id>/add-image/', add_image_to_ads.AddImageToAdsAPIView.as_view(), name='add-image-to-ads'),
     path("moderation/", get_moderation.GetModerationView.as_view(), name='get_moderation'),
     path('<int:ad_id>/update/', UpdateAdView.as_view(), name='update-ad'),
     path('<int:ad_id>/approve/', approve_ad.ApproveAdAPIView.as_view(), name='approve-ad'),
@@ -30,6 +31,7 @@ urlpatterns = [
     path('categories/create/', create_category.CreateCategoryAPIView.as_view(), name='create-category'),
     path('categories/<int:category_id>/edit/',
          edit_category.EditCategoryAPIView.as_view(), name='edit-category'),
+    path('<int:ad_id>/', get_one_ad.GetOneAdView.as_view(), name='get-one-ad'),
 
 
 

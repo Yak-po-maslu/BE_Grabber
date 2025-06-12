@@ -6,7 +6,7 @@ from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from ..serializers.serializers import UserProfileSerializer
+from ..serializers.serializers import UserProfileSerializer, UserEditProfileSerializer
 
 
 class AsyncUserProfileView(AsyncAPIView):
@@ -31,7 +31,7 @@ class AsyncUserProfileView(AsyncAPIView):
     )
     @action(detail=True, methods=['patch'], url_path='profile')
     async def patch(self, request):
-        serializer = UserProfileSerializer(
+        serializer = UserEditProfileSerializer(
             request.user,
             data=request.data,
             partial=True  # частичное обновление
@@ -41,6 +41,9 @@ class AsyncUserProfileView(AsyncAPIView):
 
         if is_valid:
             await sync_to_async(serializer.save)()
-            return Response(serializer.data)
+            response_data = await sync_to_async(lambda: UserProfileSerializer(request.user).data)()
+            return Response(response_data)
+
+
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

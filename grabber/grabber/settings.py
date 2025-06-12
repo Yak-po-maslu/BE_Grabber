@@ -83,6 +83,7 @@ INSTALLED_APPS = [
     'drf_yasg',
     'storages',
     'django_filters',
+    'channels',
 
 ]
 
@@ -243,3 +244,33 @@ AUTH_USER_MODEL = 'users.CustomUser'
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
 ]
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,  # чтобы не отключать встроенные логи Django
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} [{name}] {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '[{levelname}] {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple',  # можно поменять на verbose
+        },
+
+    },
+    'loggers': {
+        # Логгер для твоего приложения
+        'ads': {
+            'handlers': ['console', ],
+            'level': 'DEBUG',  # Можно INFO, WARNING
+            'propagate': False,
+        },
+    },
+}
