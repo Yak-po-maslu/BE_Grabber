@@ -10,6 +10,6 @@ from ads.serializers.category import CategorySerializer
 class GetCategoriesAPIView(APIView):
     async def get(self, request):
         categories = await sync_to_async(list)(Category.objects.all())
-        serializer = CategorySerializer(instance=categories, many=True)
+        serializer_data = await sync_to_async(lambda: CategorySerializer(instance=categories, many=True).data)()
 
-        return Response(data = serializer.data, status=status.HTTP_200_OK)
+        return Response(data = serializer_data, status=status.HTTP_200_OK)

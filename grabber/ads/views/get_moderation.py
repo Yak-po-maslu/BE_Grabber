@@ -17,7 +17,7 @@ class GetModerationView(APIView):
         operation_description="Get all ads with status 'pending' for moderation",
         responses={200: AdSerializer(many=True)})
     async def get(self, request):
-        ads = await sync_to_async(lambda: list(Ad.objects.filter(status="pending")))()
-        serializer = AdSerializer(ads, many=True)
+        ads = await sync_to_async(lambda: list(Ad.objects.filter(status="pending").select_related("user")))()
+        serializer_data = await sync_to_async(lambda: AdSerializer(ads, many=True).data)()
 
-        return Response({"ads": serializer.data}, status=status.HTTP_200_OK)
+        return Response({"ads": serializer_data}, status=status.HTTP_200_OK)

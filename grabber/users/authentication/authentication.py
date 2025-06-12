@@ -8,32 +8,27 @@ from django.urls import reverse
 class JWTAuthFromCookie(JWTAuthentication):
     def authenticate(self, request):
 
-        login_url = reverse("users:login")
-        register_url = reverse("users:register")
-        refresh_url = reverse("users:refresh")
-        swagger_url = reverse("schema-swagger-ui")
-        main_page_ads_url = reverse("main-page-ads")
-        categories_url = reverse("categories-list")
-        filters_ads_url = reverse("ad-list")
-        get_one_ad = 'api/ads/(?P<ad_id>[0-9]+)/\\Z'
+        # exact paths
+        allowed_paths = [
+            reverse("users:login"),
+            reverse("users:register"),
+            reverse("users:refresh"),
+            reverse("schema-swagger-ui"),
+            reverse("main-page-ads"),
+            reverse("categories-list"),
+            reverse("ad-list"),
+        ]
 
-
-        allowed_urls = [
-                        login_url,
-                        register_url,
-                        refresh_url,
-                        swagger_url,
-                        main_page_ads_url,
-                        categories_url,
-                        filters_ads_url,
-                        get_one_ad,
-                        ]
+        # regex patterns
+        allowed_regex_patterns = [
+            r'^/api/ads/(?P<ad_id>[0-9]+)/$',
+        ]
 
         def is_allowed_path(path):
-            return any(re.match(pattern, path) for pattern in allowed_urls)
+            if path in allowed_paths:
+                return True
+            return any(re.match(pattern, path) for pattern in allowed_regex_patterns)
 
-
-        # Пропускаем аутентификацию для пути логина и регистрации
         if is_allowed_path(request.path):
             return None
 
