@@ -1,5 +1,6 @@
 from asgiref.sync import sync_to_async
 from adrf.views import APIView
+from rest_framework import status
 from rest_framework.exceptions import NotFound
 from rest_framework.response import Response
 
@@ -26,10 +27,10 @@ class GetAdsAPIView(APIView):
     async def get(self, request):
         user = request.user
 
-        ads_qs = await sync_to_async(list)(Ad.objects.filter(user=user))
+        ads_qs = await sync_to_async(list)(Ad.objects.filter(user=user).select_related("user"))
 
         if not ads_qs:
             raise NotFound('Ads not found or access denied')
 
-        serializer = AdSerializer(ads_qs, many=True)
-        return Response(serializer.data)
+        serializer_data = await sync_to_async(lambda: AdSerializer(ads_qs, many=True).data)()
+        return Response(serializer_data, status=status.HTTP_200_OK)
