@@ -2,6 +2,7 @@ from django.urls import path
 from ads.views.update_ad import UpdateAdView
 from ads.views.get_main_page import MainPageAdListView
 from ads.views.get_ads import AdViewSet
+from ads.views.get_ads import RecommendedAdsAPIView
 from .views import (
     create_ad,
     add_image_to_ads,
@@ -32,8 +33,6 @@ urlpatterns = [
     path('categories/<int:category_id>/edit/',
          edit_category.EditCategoryAPIView.as_view(), name='edit-category'),
     path('<int:ad_id>/', get_one_ad.GetOneAdView.as_view(), name='get-one-ad'),
-
-
-
-
+    path('recommendations/', RecommendedAdsAPIView.as_view(), name='recommended-ads'),
+   
 ]
