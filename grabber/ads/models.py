@@ -3,7 +3,9 @@ from django.conf import settings
 
 class Category(models.Model):
     name = models.CharField(max_length=100, unique=True, verbose_name="Category Name")
-
+    description = models.TextField(blank=True)
+    image = models.URLField(blank=True)
+    
     def __str__(self):
         return self.name
 
