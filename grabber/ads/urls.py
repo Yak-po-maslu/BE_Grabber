@@ -2,7 +2,7 @@ from django.urls import path
 from ads.views.update_ad import UpdateAdView
 from ads.views.get_main_page import MainPageAdListView
 from ads.views.get_ads import AdViewSet
-from ads.views.get_ads import RecommendedAdsAPIView
+from ads.views.get_recommended_ads import RecommendedAdsAPIView
 from .views import (
     create_ad,
     add_image_to_ads,
