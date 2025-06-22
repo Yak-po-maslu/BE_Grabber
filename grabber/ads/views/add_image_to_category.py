@@ -4,20 +4,19 @@ from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
 from rest_framework.parsers import FormParser, MultiPartParser
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAdminUser  # можна змінити на ваш кастомний
 from rest_framework.response import Response
 from services.upload_one_image import UploadOneImage
-from . import user_has_permissions
-from ..models import Ad
+from ..models import Category
 from serializers.upload_image import UploadedImageSerializer
 
 
-class AddImageToAdsAPIView(APIView):
-    permission_classes = [user_has_permissions.IsSellerOrAdminOrModerator]
+class AddImageToCategoryAPIView(APIView):
+    permission_classes = [IsAdminUser]  # залишаємо лише адміна (або заміни, якщо хочеш)
     parser_classes = [MultiPartParser, FormParser]
 
     @swagger_auto_schema(
-        operation_description="Upload an image",
+        operation_description="Upload an image to a category",
         manual_parameters=[
             openapi.Parameter(
                 name="image",
@@ -36,17 +35,16 @@ class AddImageToAdsAPIView(APIView):
         },
         consumes=["multipart/form-data"],
     )
-    async def post(self, request, ad_id):
+    async def post(self, request, category_id):
         try:
-          ad = await sync_to_async(Ad.objects.get)(id=ad_id,user=request.user)
-        except Ad.DoesNotExist:
-            return Response({'error': 'Ad not found or access denied'},status=status.HTTP_404_NOT_FOUND )
+          category = await sync_to_async(Category.objects.get)(id=category_id)
+        except Category.DoesNotExist:
+            return Response({'error': 'Category not found'},status=status.HTTP_404_NOT_FOUND )
 
         # use image upload service
         image_path = await UploadOneImage.upload(request.data)
 
-        ad.images.append(image_path)
-
-        await sync_to_async(ad.save)()
+        category.image = image_path
+        await sync_to_async(category.save)()
 
         return Response({'image_url': image_path}, status=status.HTTP_201_CREATED)
