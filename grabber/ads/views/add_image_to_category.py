@@ -4,7 +4,7 @@ from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
 from rest_framework.parsers import FormParser, MultiPartParser
-from rest_framework.permissions import IsAdminUser  # можна змінити на ваш кастомний
+from users.permissions.permissions import IsAdminOrModerator
 from rest_framework.response import Response
 from services.upload_one_image import UploadOneImage
 from ..models import Category
@@ -12,7 +12,7 @@ from serializers.upload_image import UploadedImageSerializer
 
 
 class AddImageToCategoryAPIView(APIView):
-    permission_classes = [IsAdminUser]  # залишаємо лише адміна (або заміни, якщо хочеш)
+    permission_classes = [IsAdminOrModerator]
     parser_classes = [MultiPartParser, FormParser]
 
     @swagger_auto_schema(
