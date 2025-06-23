@@ -4,7 +4,6 @@ from ads.models import Ad
 from ads.serializers.ad import AdSerializer
 from ads.filters.filters import AdFilter
 from ads.configs.ad_view_config import AdViewConfig  # імпортуємо нову конфігурацію
-
 class AdViewSet(viewsets.ModelViewSet):  # <-- замінили ReadOnlyModelViewSet
     serializer_class = AdSerializer
 
