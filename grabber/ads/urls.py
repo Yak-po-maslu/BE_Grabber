@@ -5,6 +5,7 @@ from ads.views.get_ads import AdViewSet
 from ads.views.get_recommended_ads import RecommendedAdsAPIView
 from .views.add_image_to_category import AddImageToCategoryAPIView
 from ads.views.get_faq import FAQListAPIView
+from ads.views.delete_category import DeleteCategoryView
 from .views import (
     create_ad,
     get_moderation,
@@ -33,6 +34,7 @@ urlpatterns = [
     path('categories/<int:category_id>/edit/',
          edit_category.EditCategoryAPIView.as_view(), name='edit-category'),
     path('<int:category_id>/upload-image/', AddImageToCategoryAPIView.as_view(), name='upload-category-image'),
+    path('categories/<int:category_id>/delete/', DeleteCategoryView.as_view(), name='delete-category'),
     path('<int:ad_id>/', get_one_ad.GetOneAdView.as_view(), name='get-one-ad'),
     path('recommendations/', RecommendedAdsAPIView.as_view(), name='recommended-ads'),
     path('faq/', FAQListAPIView.as_view(), name='faq-list'),
