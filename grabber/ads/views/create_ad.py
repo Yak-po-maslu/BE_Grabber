@@ -36,7 +36,7 @@ class AsyncCreateAdsView(APIView):
                 collectionFormat='multi',  # важный параметр для списков в multipart
             ),
             openapi.Parameter(
-                name="category_name",
+                name="category",
                 in_=openapi.IN_FORM,  # Параметр передаётся в строке запроса (например, ?category_name=books)
                 description="Название категории для фильтрации",
                 required=True,
@@ -49,7 +49,7 @@ class AsyncCreateAdsView(APIView):
         serializer = CreateAdsSerializer(data=request.data)
         await sync_to_async(serializer.is_valid)(raise_exception=True)
 
-        category_name = request.data.get('category_name')
+        category_name = request.data.get('category')
         if category_name:
             try:
                 category = await sync_to_async(Category.objects.get)(name=category_name)
