@@ -17,6 +17,7 @@ class JWTAuthFromCookie(JWTAuthentication):
             reverse("main-page-ads"),
             reverse("categories-list"),
             reverse("ad-list"),
+            reverse('newsletter-subscribe')
         ]
 
         # regex patterns
