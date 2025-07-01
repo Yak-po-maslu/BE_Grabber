@@ -150,9 +150,12 @@ class UserRegisterSerializer(serializers.ModelSerializer):
     def validate_password(self, value):
         errors = []
 
-        # 1. Минимальная длина
-        if len(value) < 8:
-            errors.append("Password must be at least 8 characters long.")
+        # 1. Минимальная and max длина
+        if len(value) < 6:
+            errors.append("Password must be at least 6 characters long.")
+
+        if len(value) > 255:
+            errors.append("Password must be at most 255 characters long.")
 
         # 2. Заглавная буква
         if not re.search(r'[A-Z]', value):
