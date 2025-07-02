@@ -84,6 +84,7 @@ INSTALLED_APPS = [
     'storages',
     'django_filters',
     'channels',
+    'subscriptions'
 
 ]
 
