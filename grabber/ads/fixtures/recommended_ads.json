@@ -1,77 +1,45 @@
 [
   {
-    "model": "ads.ad",
-    "pk": 3001,
-    "fields": {
-      "title": "Обідній гарнітур у стилі модерн 60-х – горіх",
-      "description": "Оригінальний обідній стіл 1960-х років з 6 стільцями у відмінному стані. Масив горіха, оригінальна оббивка, нещодавно реставрована.",
-      "price": "1899.00",
-      "images": ["https://example.com/images/dining_set_walnut.jpg"],
-      "status": "approved",
-      "user": 1,
-      "category": 3,
-      "is_recommended": true,
-      "created_at": "2024-12-05T14:20:00Z"
-    }
+"title": "Керамічні тарілки",
+"description": "Ідеальні для стильної подачі ваших улюблених страв",
+"images": [
+  { "id": "img1", "image": "plates.jpg" }
+],
+"price": "250",
+"location": "Кам’янець-Подільський"
   },
-  {
-    "model": "ads.ad",
-    "pk": 3002,
-    "fields": {
-      "title": "Кухонний міксер KitchenAid – Professional 600",
-      "description": "Потужний міксер KitchenAid Professional 600 в перлинно-білому кольорі. В комплекті: гак для тіста, вінчик і плоский збивач. Ледь використовувався, працює ідеально.",
-      "price": "299.00",
-      "images": ["https://example.com/images/kitchenaid_mixer.jpg"],
-      "status": "approved",
-      "user": 6,
-      "category": 2,
-      "is_recommended": true,
-      "created_at": "2024-12-04T11:35:00Z"
-    }
-  },
-  {
-    "model": "ads.ad",
-    "pk": 3003,
-    "fields": {
-      "title": "Газовий гриль Weber Genesis II – нержавійка",
-      "description": "Преміальний газовий гриль з 3 пальниками, бічними столиками та решіткою для підігріву. У чудовому стані, в комплекті чохол. Ідеальний для відпочинку на природі.",
-      "price": "649.00",
-      "images": ["https://example.com/images/weber_genesis_grill.jpg"],
-      "status": "approved",
-      "user": 6,
-      "category": 4,
-      "is_recommended": true,
-      "created_at": "2024-12-03T16:50:00Z"
-    }
-  },
-  {
-    "model": "ads.ad",
-    "pk": 3004,
-    "fields": {
-      "title": "Перський килим ручної роботи – 8x10",
-      "description": "Красивий перський килим ручного вузла з витонченим орнаментом. Професійно очищений, у відмінному стані. Додає вишуканості будь-якому інтер’єру.",
-      "price": "2499.00",
-      "images": ["https://example.com/images/persian_rug.jpg"],
-      "status": "approved",
-      "user": 1,
-      "category": 3,
-      "is_recommended": true,
-      "created_at": "2024-12-02T13:25:00Z"
-    }
-  },
-  {
-    "model": "ads.ad",
-    "pk": 3005,
-    "fields": {
-      "title": "Комплект садових меблів з тика – стіл + 4 стільці",
-      "description": "Якісний комплект садових меблів з тика. Стійкий до погодних умов і природно гарний. У комплекті подушки та парасоля. Легке старіння надає характеру.",
-      "price": "899.00",
-      "images": ["https://example.com/images/teak_outdoor_furniture.jpg"],
-      "status": "approved",
-      "user": 5,
-      "category": 5,
-      "is_recommended": true,
-      "created_at": "2024-12-01T10:15:00Z"
-    }
-  }
+{
+  "title": "Домашній мед з пасіки",
+  "description": "Натуральний липовий мед зі збору 2024 року – без домішок і цукру",
+  "images": [
+    { "id": "img3", "image": "honey.jpg" }
+  ],
+  "price": "180",
+  "location": "Черкаси"
+ },
+{
+ "title": "Набір: керамічні тарілка і горнятко",
+ "description": "Унікальні форми, створені вручну й натуральна глазур",
+ "images": [
+  { "id": "img2", "image": "Set-ceramic.jpg" }
+ ]
+},
+ {
+  "title": "Послуги ручного розпису посуду",
+  "description": "Індивідуальні малюнки на кераміці – подарунок з душею для близьких",
+  "images": [
+    { "id": "img4", "image": "painting-service.jpg" }
+  ],
+  "price": "150",
+  "location": "Івано-Франківськ"
+},
+{
+  "title": "Льняна сукня ручної роботи",
+  "description": "Вишукана сукня з натурального льону – легка та зручна на кожен день",
+  "images": [
+    { "id": "img5", "image": "dress.jpg" }
+  ],
+  "price": "850",
+  "location": "Луцьк"
+}
 ]
