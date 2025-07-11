@@ -20,6 +20,7 @@ class Ad(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField()
     price = models.DecimalField(max_digits=10, decimal_places=2, db_index=True)
+    location = models.CharField(max_length=255, blank=True, null=True)
     images = models.JSONField(default=list)  # масив шляхів до фото
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='draft')
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='ads')

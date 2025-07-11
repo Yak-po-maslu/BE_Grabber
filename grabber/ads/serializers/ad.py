@@ -3,7 +3,7 @@ from ..models import Ad
 
 
 class AdSerializer(serializers.ModelSerializer):
-    location = serializers.CharField(source='user.location')
+    location = serializers.CharField(required=False, allow_blank=True)
     contact_name = serializers.CharField(source='user.first_name')
     phone = serializers.SerializerMethodField()
 
