@@ -12,6 +12,7 @@ class AdSerializer(serializers.ModelSerializer):
     view_count = serializers.IntegerField(source='views', read_only=True)
     email = serializers.CharField(source='user.email', read_only=True)
 
+    is_favorite = serializers.SerializerMethodField() 
 
     #
     #phone_number = models.CharField(max_length=255, blank=False, default='+38033333333')
@@ -21,10 +22,15 @@ class AdSerializer(serializers.ModelSerializer):
         model = Ad
         fields = ['id', 'description', 'price', 'user_id',
                   'title', 'status', 'category', 'category_id', 'images', 'created_at','phone',
-                  'contact_name', 'location', 'view_count', 'email']
+                  'contact_name', 'location', 'view_count', 'email','is_favorite']
 
 
 
     def get_phone(self, obj):
         return obj.user.phone_number if obj.user.show_phone else 'user is not show phone'
 
+    def get_is_favorite(self, obj): 
+        user = self.context.get('request').user
+        if user and user.is_authenticated:
+            return obj.favorited_by.filter(user=user).exists()
+        return False
