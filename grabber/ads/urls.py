@@ -40,6 +40,6 @@ urlpatterns = [
     path('recommendations/', RecommendedAdsAPIView.as_view(), name='recommended-ads'),
     path('faq/', FAQListAPIView.as_view(), name='faq-list'),
     path('favorites/', FavoriteAdAddView.as_view(), name='add_favorite'),
-    path('favorites/<int:ad_id>/', FavoriteAdRemoveView.as_view(), name='remove_favorite'),
+    path('favorites/<int:product_id>/', FavoriteAdRemoveView.as_view(), name='remove_favorite'),
    
 ]
