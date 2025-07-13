@@ -3,75 +3,80 @@
     "model": "ads.ad",
     "pk": 3001,
     "fields": {
-      "title": "Обідній гарнітур у стилі модерн 60-х – горіх",
-      "description": "Оригінальний обідній стіл 1960-х років з 6 стільцями у відмінному стані. Масив горіха, оригінальна оббивка, нещодавно реставрована.",
-      "price": "1899.00",
-      "images": ["https://example.com/images/dining_set_walnut.jpg"],
+      "title": "Керамічні тарілки",
+      "description": "Ідеальні для стильної подачі ваших улюблених страв",
+      "price": "250.00",
+      "images": ["uploads/plates.jpg"],
       "status": "approved",
-      "user": 1,
-      "category": 3,
+      "location": "Кам’янець-Подільський",
+      "user": 3,
+      "category": 2,
       "is_recommended": true,
-      "created_at": "2024-12-05T14:20:00Z"
+      "created_at": "2024-12-01T10:00:00Z"
     }
   },
   {
     "model": "ads.ad",
     "pk": 3002,
     "fields": {
-      "title": "Кухонний міксер KitchenAid – Professional 600",
-      "description": "Потужний міксер KitchenAid Professional 600 в перлинно-білому кольорі. В комплекті: гак для тіста, вінчик і плоский збивач. Ледь використовувався, працює ідеально.",
-      "price": "299.00",
-      "images": ["https://example.com/images/kitchenaid_mixer.jpg"],
+      "title": "Домашній мед з пасіки",
+      "description": "Натуральний липовий мед зі збору 2024 року – без домішок і цукру",
+      "price": "180.00",
+      "images": ["uploads/honey.jpg"],
+      "location": "Черкаси",
       "status": "approved",
       "user": 6,
-      "category": 2,
+      "category": 3,
       "is_recommended": true,
-      "created_at": "2024-12-04T11:35:00Z"
+      "created_at": "2024-12-02T11:00:00Z"
     }
   },
   {
     "model": "ads.ad",
     "pk": 3003,
     "fields": {
-      "title": "Газовий гриль Weber Genesis II – нержавійка",
-      "description": "Преміальний газовий гриль з 3 пальниками, бічними столиками та решіткою для підігріву. У чудовому стані, в комплекті чохол. Ідеальний для відпочинку на природі.",
-      "price": "649.00",
-      "images": ["https://example.com/images/weber_genesis_grill.jpg"],
+      "title": "Набір: керамічні тарілка і горнятко",
+      "description": "Унікальні форми, створені вручну й натуральна глазур",
+      "price": "450.00",
+      "images": ["uploads/Set-ceramic.jpg"],
+      "location": "Полтава",
       "status": "approved",
-      "user": 6,
-      "category": 4,
+      "user": 4,
+      "category": 2,
       "is_recommended": true,
-      "created_at": "2024-12-03T16:50:00Z"
+      "created_at": "2024-12-03T12:00:00Z"
     }
   },
   {
     "model": "ads.ad",
     "pk": 3004,
     "fields": {
-      "title": "Перський килим ручної роботи – 8x10",
-      "description": "Красивий перський килим ручного вузла з витонченим орнаментом. Професійно очищений, у відмінному стані. Додає вишуканості будь-якому інтер’єру.",
-      "price": "2499.00",
-      "images": ["https://example.com/images/persian_rug.jpg"],
+      "title": "Послуги ручного розпису посуду",
+      "description": "Індивідуальні малюнки на кераміці – подарунок з душею для близьких",
+      "price": "150.00",
+      "images": ["uploads/painting-service.jpg"],
+      "location": "Івано-Франківськ",
       "status": "approved",
       "user": 1,
-      "category": 3,
+      "category": 5,
       "is_recommended": true,
-      "created_at": "2024-12-02T13:25:00Z"
+      "created_at": "2024-12-04T13:00:00Z"
     }
   },
   {
     "model": "ads.ad",
     "pk": 3005,
     "fields": {
-      "title": "Комплект садових меблів з тика – стіл + 4 стільці",
-      "description": "Якісний комплект садових меблів з тика. Стійкий до погодних умов і природно гарний. У комплекті подушки та парасоля. Легке старіння надає характеру.",
-      "price": "899.00",
-      "images": ["https://example.com/images/teak_outdoor_furniture.jpg"],
+      "title": "Льняна сукня ручної роботи",
+      "description": "Вишукана сукня з натурального льону – легка та зручна на кожен день",
+      "price": "850.00",
+      "images": ["uploads/dress.jpg"],
+      "location": "Луцьк",
       "status": "approved",
-      "user": 5,
-      "category": 5,
+      "user": 12,
+      "category": 2,
       "is_recommended": true,
-      "created_at": "2024-12-01T10:15:00Z"
+      "created_at": "2024-12-05T14:00:00Z"
     }
   }
 ]
