@@ -30,7 +30,8 @@ class AdSerializer(serializers.ModelSerializer):
         return obj.user.phone_number if obj.user.show_phone else 'user is not show phone'
 
     def get_is_favorite(self, obj): 
-        user = self.context.get('request').user
+        request = self.context.get('request')
+        user = request.user if request else None
         if user and user.is_authenticated:
             return obj.favorited_by.filter(user=user).exists()
         return False
