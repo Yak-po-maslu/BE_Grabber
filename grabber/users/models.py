@@ -33,6 +33,8 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         default=Roles.SELLER,
     )
     email = models.EmailField(unique=True)
+    description = models.fields.CharField(max_length=255, default="")
+    social = models.URLField(blank=True)
     first_name = models.CharField(max_length=255, default="Anonymous")
     last_name = models.CharField(max_length=255, default="Anonymous")
     is_active = models.BooleanField(default=True)
@@ -62,5 +64,35 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.email
+
+
+class SocialLink(models.Model):
+    PLATFORM_CHOICES = [
+        ('github', 'GitHub'),
+        ('linkedin', 'LinkedIn'),
+        ('twitter', 'Twitter'),
+        ('facebook', 'Facebook'),
+        ('instagram', 'Instagram'),
+        ('youtube', 'Youtube'),
+        ('telegram', 'Telegram'),
+        ('viber', 'Viber'),
+        ('other', 'Other'),
+    ]
+
+    user = models.ForeignKey(
+        CustomUser,
+        on_delete=models.CASCADE,
+        related_name='social_links'
+    )
+    platform = models.CharField(
+        max_length=50,
+        choices=PLATFORM_CHOICES,
+        default='other'
+    )
+    url = models.URLField()
+
+    def __str__(self):
+        return f"{self.user.email} - {self.platform}"
+
 
 # Create your models here.
