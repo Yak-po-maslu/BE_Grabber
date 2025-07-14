@@ -1,0 +1,82 @@
+[
+  {
+    "model": "ads.ad",
+    "pk": 3001,
+    "fields": {
+      "title": "Керамічні тарілки",
+      "description": "Ідеальні для стильної подачі ваших улюблених страв",
+      "price": "250.00",
+      "images": ["uploads/plates.jpg"],
+      "status": "approved",
+      "location": "Кам’янець-Подільський",
+      "user": 3,
+      "category": 2,
+      "is_recommended": true,
+      "created_at": "2024-12-01T10:00:00Z"
+    }
+  },
+  {
+    "model": "ads.ad",
+    "pk": 3002,
+    "fields": {
+      "title": "Домашній мед з пасіки",
+      "description": "Натуральний липовий мед зі збору 2024 року – без домішок і цукру",
+      "price": "180.00",
+      "images": ["uploads/honey.jpg"],
+      "location": "Черкаси",
+      "status": "approved",
+      "user": 6,
+      "category": 3,
+      "is_recommended": true,
+      "created_at": "2024-12-02T11:00:00Z"
+    }
+  },
+  {
+    "model": "ads.ad",
+    "pk": 3003,
+    "fields": {
+      "title": "Набір: керамічні тарілка і горнятко",
+      "description": "Унікальні форми, створені вручну й натуральна глазур",
+      "price": "450.00",
+      "images": ["uploads/Set-ceramic.jpg"],
+      "location": "Полтава",
+      "status": "approved",
+      "user": 4,
+      "category": 2,
+      "is_recommended": true,
+      "created_at": "2024-12-03T12:00:00Z"
+    }
+  },
+  {
+    "model": "ads.ad",
+    "pk": 3004,
+    "fields": {
+      "title": "Послуги ручного розпису посуду",
+      "description": "Індивідуальні малюнки на кераміці – подарунок з душею для близьких",
+      "price": "150.00",
+      "images": ["uploads/painting-service.jpg"],
+      "location": "Івано-Франківськ",
+      "status": "approved",
+      "user": 1,
+      "category": 5,
+      "is_recommended": true,
+      "created_at": "2024-12-04T13:00:00Z"
+    }
+  },
+  {
+    "model": "ads.ad",
+    "pk": 3005,
+    "fields": {
+      "title": "Льняна сукня ручної роботи",
+      "description": "Вишукана сукня з натурального льону – легка та зручна на кожен день",
+      "price": "850.00",
+      "images": ["uploads/dress.jpg"],
+      "location": "Луцьк",
+      "status": "approved",
+      "user": 12,
+      "category": 2,
+      "is_recommended": true,
+      "created_at": "2024-12-05T14:00:00Z"
+    }
+  }
+]

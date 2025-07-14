@@ -6,6 +6,7 @@ from ads.views.get_recommended_ads import RecommendedAdsAPIView
 from .views.add_image_to_category import AddImageToCategoryAPIView
 from ads.views.get_faq import FAQListAPIView
 from ads.views.delete_category import DeleteCategoryView
+from ads.views.favorite import FavoriteAdAddView, FavoriteAdRemoveView
 from .views import (
     create_ad,
     get_moderation,
@@ -38,5 +39,7 @@ urlpatterns = [
     path('<int:ad_id>/', get_one_ad.GetOneAdView.as_view(), name='get-one-ad'),
     path('recommendations/', RecommendedAdsAPIView.as_view(), name='recommended-ads'),
     path('faq/', FAQListAPIView.as_view(), name='faq-list'),
-   
+    path('favorites/', FavoriteAdAddView.as_view(), name='add_favorite'),
+    path('favorites/<int:product_id>/', FavoriteAdRemoveView.as_view(), name='remove_favorite'),
+
 ]

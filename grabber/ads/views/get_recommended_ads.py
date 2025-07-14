@@ -16,11 +16,13 @@ class RecommendedAdFilter(django_filters.FilterSet):
         fields = ['category', 'min_price', 'max_price']
 
 @method_decorator(cache_page(60 * 5), name='dispatch')  # кеш 5 хв
-class RecommendedAdsAPIView(ListAPIView):
-    ...
 
 class RecommendedAdsAPIView(ListAPIView):
     queryset = Ad.objects.filter(is_recommended=True, status='approved').select_related('user', 'category')
     serializer_class = AdSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_class = RecommendedAdFilter
+
+    def get_serializer(self, *args, **kwargs):
+        kwargs['context'] = self.get_serializer_context()
+        return super().get_serializer(*args, **kwargs)
