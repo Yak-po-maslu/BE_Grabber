@@ -12,7 +12,7 @@ class UserEditProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id','email', 'first_name', 'last_name','phone_number','show_phone','role', 'date_joined', 'location',
-                  'user_photo', 'social_links']
+                  'user_photo', 'social_links', 'description']
         extra_kwargs = {
             'email': {'required': True},
         }
@@ -67,13 +67,19 @@ class UserEditProfileSerializer(serializers.ModelSerializer):
         return value.title()
 
     def update(self, instance, validated_data):
-        social_links_data = validated_data.pop('social_links', [])
+        # забираем social_links из данных
+        social_links_data = validated_data.pop('social_links', None)
+
         # обновляем простые поля
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
         instance.save()
 
-        # пересоздаём соцсети (или можно сделать более умно)
+        # если social_links не передали — ничего не делаем с ними
+        if social_links_data is None:
+            return instance
+
+        # пересоздаём соцсети
         instance.social_links.all().delete()
         for link_data in social_links_data:
             SocialLink.objects.create(user=instance, **link_data)
@@ -86,7 +92,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id','email', 'first_name', 'last_name','phone_number','show_phone','role', 'date_joined',
-                  'location','user_photo', 'social_links']
+                  'location','user_photo', 'social_links', 'description']
         extra_kwargs = {
             'email': {'required': True},
         }
@@ -143,7 +149,8 @@ class UserRegisterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['email', 'first_name', 'last_name', 'phone_number','show_phone','password','role', "social_links"]
+        fields = ['email', 'first_name', 'last_name', 'phone_number','show_phone','password','role', "social_links",
+                  'description']
 
     def validate_email(self, value):
         value = value.strip().lower()
