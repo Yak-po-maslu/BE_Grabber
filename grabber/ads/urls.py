@@ -41,5 +41,5 @@ urlpatterns = [
     path('faq/', FAQListAPIView.as_view(), name='faq-list'),
     path('favorites/', FavoriteAdAddView.as_view(), name='add_favorite'),
     path('favorites/<int:product_id>/', FavoriteAdRemoveView.as_view(), name='remove_favorite'),
-   
+
 ]

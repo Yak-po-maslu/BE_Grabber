@@ -6,7 +6,9 @@ from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
+from ..models import CustomUser
 from ..serializers.serializers import UserProfileSerializer, UserEditProfileSerializer
+from ..utils.getUserData import get_user_data
 
 
 class AsyncUserProfileView(AsyncAPIView):
@@ -20,12 +22,14 @@ class AsyncUserProfileView(AsyncAPIView):
     )
     @action(detail=True, methods=['get'], url_path='profile')
     async def get(self, request):
-        serializer = UserProfileSerializer(request.user)
+        user = await sync_to_async(CustomUser.objects.prefetch_related('social_links').get)(pk=request.user.pk)
+
+        serializer = UserProfileSerializer(user)
         return Response(serializer.data)
 
     @swagger_auto_schema(
         method='patch',
-        request_body=UserProfileSerializer,
+        request_body=UserEditProfileSerializer,
         responses={status.HTTP_200_OK: UserProfileSerializer()},
 
     )
@@ -41,7 +45,8 @@ class AsyncUserProfileView(AsyncAPIView):
 
         if is_valid:
             await sync_to_async(serializer.save)()
-            response_data = await sync_to_async(lambda: UserProfileSerializer(request.user).data)()
+            #response_data = await sync_to_async(lambda: UserProfileSerializer(request.user).data)()
+            response_data = await sync_to_async(get_user_data)(request.user)
             return Response(response_data)
 
 

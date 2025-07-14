@@ -1,13 +1,18 @@
 from rest_framework import serializers
+
+from .social_get import SocialLinkSerializer
+from ..models import SocialLink
 from ..views import CustomUser
 import re
 
 User = CustomUser
 
 class UserEditProfileSerializer(serializers.ModelSerializer):
+    social_links = SocialLinkSerializer(read_only=False, many=True)
     class Meta:
         model = User
-        fields = ['id','email', 'first_name', 'last_name','phone_number','show_phone','role', 'date_joined', 'location','user_photo']
+        fields = ['id','email', 'first_name', 'last_name','phone_number','show_phone','role', 'date_joined', 'location',
+                  'user_photo', 'social_links', 'description']
         extra_kwargs = {
             'email': {'required': True},
         }
@@ -61,25 +66,51 @@ class UserEditProfileSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Location cannot be empty.")
         return value.title()
 
+    def update(self, instance, validated_data):
+        # забираем social_links из данных
+        social_links_data = validated_data.pop('social_links', None)
+
+        # обновляем простые поля
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        instance.save()
+
+        # если social_links не передали — ничего не делаем с ними
+        if social_links_data is None:
+            return instance
+
+        # пересоздаём соцсети
+        instance.social_links.all().delete()
+        for link_data in social_links_data:
+            SocialLink.objects.create(user=instance, **link_data)
+
+        return instance
+
 class UserProfileSerializer(serializers.ModelSerializer):
     phone_number = serializers.SerializerMethodField()
+    social_links = SocialLinkSerializer(many=True, read_only=True)
     class Meta:
         model = User
-        fields = ['id','email', 'first_name', 'last_name','phone_number','show_phone','role', 'date_joined', 'location','user_photo']
+        fields = ['id','email', 'first_name', 'last_name','phone_number','show_phone','role', 'date_joined',
+                  'location','user_photo', 'social_links', 'description']
         extra_kwargs = {
             'email': {'required': True},
         }
         read_only_fields = ['role', 'date_joined', 'id']
 
     def get_phone_number(self, obj):
-        # Показуємо номер лише якщо користувач дозволив
-        return obj.phone_number if obj.show_phone else None
+        # Показуємо номер в любому випадку
+        return obj.phone_number
+
+
 
 
 class UserLoginSerializer(serializers.Serializer):
+    social_links = SocialLinkSerializer(many=True, read_only=True)
     class Meta:
         model = User
-        fields = ['id','email', 'first_name', 'last_name','phone_number', 'role', 'date_joined', 'location']
+        fields = ['id','email', 'first_name', 'last_name','phone_number', 'role', 'date_joined', 'location',
+                  'social_links']
         extra_kwargs = {
             'email': {'required': True},
         }
@@ -106,6 +137,7 @@ class UserRegisterSerializer(serializers.ModelSerializer):
     first_name = serializers.CharField(required=True)
     last_name = serializers.CharField(required=True)
     phone_number = serializers.CharField(required=True)
+    social_links = SocialLinkSerializer(many=True)
     role = serializers.ChoiceField(
         choices=[
             (User.Roles.BUYER, "Покупець"),
@@ -117,7 +149,8 @@ class UserRegisterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['email', 'first_name', 'last_name', 'phone_number','show_phone','password','role']
+        fields = ['email', 'first_name', 'last_name', 'phone_number','show_phone','password','role', "social_links",
+                  'description']
 
     def validate_email(self, value):
         value = value.strip().lower()
@@ -193,7 +226,14 @@ class UserRegisterSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("You cannot assign this role.")
         return value
 
+
     def create(self, validated_data):
-        return CustomUser.objects.create_user(**validated_data)
+        social_links_data = validated_data.pop('social_links', [])
+        user = CustomUser.objects.create(**validated_data)
+        for link_data in social_links_data:
+            SocialLink.objects.create(user=user, **link_data)
+        return user
+
+
 
 

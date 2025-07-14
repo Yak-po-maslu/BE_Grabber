@@ -62,5 +62,5 @@ class AsyncCookieViewLogin(AsyncAPIView):
 
 
         response = set_default_jwt_cookies(response, access_token, refresh_token)
-        response.data = get_user_data(user)
+        response.data = await sync_to_async(get_user_data)(user)
         return response
