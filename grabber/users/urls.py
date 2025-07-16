@@ -1,5 +1,6 @@
 
 from django.urls import path
+from users.views.add_to_cart import AddToCartView, RemoveFromCartView
 from .views import (
     login,
     register,
@@ -32,4 +33,8 @@ urlpatterns = [
     path('upload-profile-image/',add_image_profile.AddImageProfileView.as_view(),name='add_image_profile'),
     path('change-password/', change_password.ChangePasswordView.as_view(),name='change_password'),
     path('delete-image-profile/', delete_image_profile.DeleteImageProfile.as_view(),name='delete_image_profile'),
+
+    # add to cart and remove from cart
+    path('cart/add', AddToCartView.as_view(), name='cart-add'),
+    path('cart/remove', RemoveFromCartView.as_view(), name='cart-remove'),
 ]
