@@ -2,6 +2,8 @@ from django.core.mail import send_mail
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager, AbstractUser
 from django.db import models
+from django.conf import settings
+from ads.models import Ad
 
 class UserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
@@ -94,5 +96,13 @@ class SocialLink(models.Model):
     def __str__(self):
         return f"{self.user.email} - {self.platform}"
 
+
+class CartItem(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='cart_items')
+    product = models.ForeignKey(Ad, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=1)
+
+    class Meta:
+        unique_together = ('user', 'product')  # один товар один раз у кошику
 
 # Create your models here.
