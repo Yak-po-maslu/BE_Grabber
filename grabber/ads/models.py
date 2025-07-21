@@ -77,3 +77,13 @@ class FavoriteAd(models.Model):
 
     class Meta:
         unique_together = ('user', 'ad')
+
+class Review(models.Model):
+    product = models.ForeignKey(Ad, on_delete=models.CASCADE, related_name='reviews')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    rating = models.PositiveSmallIntegerField()  # 1-5, наприклад
+    comment = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('product', 'user')  # Один користувач = один відгук на товар
