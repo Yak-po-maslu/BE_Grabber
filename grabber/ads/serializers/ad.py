@@ -11,14 +11,16 @@ class AdSerializer(serializers.ModelSerializer):
     category_id = serializers.IntegerField(source='category.id', read_only=True)
     view_count = serializers.IntegerField(source='views', read_only=True)
     email = serializers.CharField(source='user.email', read_only=True)
+    is_favorite = serializers.SerializerMethodField()
 
+    
+    # 👇 Додано поле images як список URL
+    images = serializers.ListField(
+        child=serializers.URLField(),
+        required=False,
+        allow_empty=True
+    ) 
 
-    is_favorite = serializers.SerializerMethodField() 
-
-    #
-    #phone_number = models.CharField(max_length=255, blank=False, default='+38033333333')
-    #show_phone = models.BooleanField(default=False)
-    #
     class Meta:
         model = Ad
         fields = ['id', 'description', 'price', 'user_id',
