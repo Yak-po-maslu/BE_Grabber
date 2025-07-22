@@ -8,6 +8,7 @@ from ads.views.get_faq import FAQListAPIView
 from ads.views.delete_category import DeleteCategoryView
 from ads.views.favorite import FavoriteAdAddView, FavoriteAdRemoveView
 from ads.views.get_reviews import ProductReviewView
+from ads.views.get_product_comments import ProductCommentView
 from .views import (
     create_ad,
     get_moderation,
@@ -42,6 +43,7 @@ urlpatterns = [
     path('faq/', FAQListAPIView.as_view(), name='faq-list'),
     path('favorites/', FavoriteAdAddView.as_view(), name='add_favorite'),
     path('favorites/<int:product_id>/', FavoriteAdRemoveView.as_view(), name='remove_favorite'),
-    path('products/<int:id>/reviews', ProductReviewView.as_view(), name='product-reviews'),
+    path('products/<int:id>/reviews/', ProductReviewView.as_view(), name='product-reviews'),
+    path('products/<int:id>/comments/', ProductCommentView.as_view(), name='product-comments')
 
 ]

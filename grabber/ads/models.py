@@ -87,3 +87,13 @@ class Review(models.Model):
 
     class Meta:
         unique_together = ('product', 'user')  # Один користувач = один відгук на товар
+
+class ProductComment(models.Model):
+    product_id = models.IntegerField()
+    user_name = models.CharField(max_length=50)
+    rating = models.PositiveSmallIntegerField()
+    comment_text = models.CharField(max_length=100)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user_name} ({self.rating}★): {self.comment_text[:20]}"
