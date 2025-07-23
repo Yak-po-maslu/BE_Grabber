@@ -6,6 +6,7 @@ from ads.serializers.favorite_ad import FavoriteAdAddSerializer
 from ads.models import Ad, FavoriteAd
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
+from ads.serializers.favorite_ad import AdListSerializer
 
 class FavoriteAdAddView(APIView):
     permission_classes = [IsAuthenticated]
@@ -29,6 +30,18 @@ class FavoriteAdAddView(APIView):
             except Ad.DoesNotExist:
                 return Response({"detail": "Ad not found"}, status=status.HTTP_404_NOT_FOUND)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class FavoriteAdListView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @swagger_auto_schema(
+        responses={200: openapi.Response("List of favorite ads")}
+    )
+    def get(self, request):
+        favorites = FavoriteAd.objects.filter(user=request.user).select_related('ad')
+        ads = [favorite.ad for favorite in favorites]
+        serializer = AdListSerializer(ads, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 class FavoriteAdRemoveView(APIView):
     permission_classes = [IsAuthenticated]
 
