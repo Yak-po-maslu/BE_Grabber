@@ -6,7 +6,7 @@ from ads.views.get_recommended_ads import RecommendedAdsAPIView
 from .views.add_image_to_category import AddImageToCategoryAPIView
 from ads.views.get_faq import FAQListAPIView
 from ads.views.delete_category import DeleteCategoryView
-from ads.views.favorite import FavoriteAdAddView, FavoriteAdRemoveView
+from ads.views.favorite import FavoriteAdAddView, FavoriteAdRemoveView, FavoriteAdListView
 from ads.views.get_reviews import ProductReviewView
 from ads.views.get_product_comments import ProductCommentView
 from ads.views.upload_image_view import UploadImageView, DeleteAdImageView
@@ -48,5 +48,6 @@ urlpatterns = [
     path('products/<int:id>/comments/', ProductCommentView.as_view(), name='product-comments'),
     path('upload-image/', UploadImageView.as_view(), name='upload-image'),
     path('images/delete/', DeleteAdImageView.as_view(), name='delete-ad-image'),
-
+    path('favorite/', FavoriteAdListView.as_view(), name='favorite-ads-list'),
+    path('products/<int:id>/reviews', ProductReviewView.as_view(), name='product-reviews'),
 ]
