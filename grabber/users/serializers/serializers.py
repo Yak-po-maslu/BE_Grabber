@@ -137,7 +137,7 @@ class UserRegisterSerializer(serializers.ModelSerializer):
     first_name = serializers.CharField(required=True)
     last_name = serializers.CharField(required=True)
     phone_number = serializers.CharField(required=True)
-    social_links = SocialLinkSerializer(many=True)
+    #social_links = SocialLinkSerializer(many=True)
     role = serializers.ChoiceField(
         choices=[
             (User.Roles.BUYER, "Покупець"),
@@ -149,8 +149,7 @@ class UserRegisterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['email', 'first_name', 'last_name', 'phone_number','show_phone','password','role', "social_links",
-                  'description']
+        fields = ['email', 'first_name', 'last_name', 'phone_number','show_phone','password','role','description']
 
     def validate_email(self, value):
         value = value.strip().lower()
@@ -227,12 +226,12 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         return value
 
 
-    def create(self, validated_data):
-        social_links_data = validated_data.pop('social_links', [])
-        user = CustomUser.objects.create(**validated_data)
-        for link_data in social_links_data:
-            SocialLink.objects.create(user=user, **link_data)
-        return user
+    # def create(self, validated_data):
+    #     social_links_data = validated_data.pop('social_links', [])
+    #     user = CustomUser.objects.create(**validated_data)
+    #     for link_data in social_links_data:
+    #         SocialLink.objects.create(user=user, **link_data)
+    #     return user
 
 
 
