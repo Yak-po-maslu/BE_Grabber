@@ -109,12 +109,11 @@ class UserLoginSerializer(serializers.Serializer):
     social_links = SocialLinkSerializer(many=True, read_only=True)
     class Meta:
         model = User
-        fields = ['id','email', 'first_name', 'last_name','phone_number', 'role', 'date_joined', 'location',
-                  'social_links']
+        fields = ['email','password']
         extra_kwargs = {
             'email': {'required': True},
         }
-        read_only_fields = ['role', 'date_joined', 'id']
+        #read_only_fields = ['role', 'date_joined', 'id']
     email = serializers.EmailField()
     password = serializers.CharField()
 
@@ -134,22 +133,22 @@ class UserLoginSerializer(serializers.Serializer):
 class UserRegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, required=True, min_length=8)
     email = serializers.EmailField(required=True)
-    first_name = serializers.CharField(required=True)
-    last_name = serializers.CharField(required=True)
-    phone_number = serializers.CharField(required=True)
+    #first_name = serializers.CharField(required=True)
+    #last_name = serializers.CharField(required=True)
+    #phone_number = serializers.CharField(required=True)
     #social_links = SocialLinkSerializer(many=True)
-    role = serializers.ChoiceField(
-        choices=[
-            (User.Roles.BUYER, "Покупець"),
-            (User.Roles.SELLER, "Продавець"),
-        ],
-        required=False,
-        default=User.Roles.SELLER
-    )
+    # role = serializers.ChoiceField(
+    #     choices=[
+    #         (User.Roles.BUYER, "Покупець"),
+    #         (User.Roles.SELLER, "Продавець"),
+    #     ],
+    #     required=False,
+    #     default=User.Roles.SELLER
+    # )
 
     class Meta:
         model = User
-        fields = ['email', 'first_name', 'last_name', 'phone_number','show_phone','password','role','description']
+        fields = ['email','password']
 
     def validate_email(self, value):
         value = value.strip().lower()
@@ -157,27 +156,27 @@ class UserRegisterSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("This email is already in use.")
         return value
 
-    def validate_first_name(self, value):
-        if not value.strip():
-            raise serializers.ValidationError("First name cannot be empty.")
-        return value
+    # def validate_first_name(self, value):
+    #     if not value.strip():
+    #         raise serializers.ValidationError("First name cannot be empty.")
+    #     return value
 
-    def validate_last_name(self, value):
-        if not value.strip():
-            raise serializers.ValidationError("Last name cannot be empty.")
-        return value
+    # def validate_last_name(self, value):
+    #     if not value.strip():
+    #         raise serializers.ValidationError("Last name cannot be empty.")
+    #     return value
 
-    def validate_phone_number(self, value):
+    # def validate_phone_number(self, value):
 
-        value = value.strip()
+    #     value = value.strip()
 
-        # Проверка формата: начинается с +, дальше только цифры
-        if not re.fullmatch(r'\+380\d{9}', value):
-            raise serializers.ValidationError(
-                "Phone number must be in format +380XXXXXXXXX (12 digits after +380, no spaces or symbols)."
-            )
+    #     # Проверка формата: начинается с +, дальше только цифры
+    #     if not re.fullmatch(r'\+380\d{9}', value):
+    #         raise serializers.ValidationError(
+    #             "Phone number must be in format +380XXXXXXXXX (12 digits after +380, no spaces or symbols)."
+    #         )
 
-        return value
+    #     return value
 
     def validate_password(self, value):
         errors = []
@@ -218,12 +217,19 @@ class UserRegisterSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(errors)
 
         return value
+    
+    def create(self, validated_data):
+        password = validated_data.pop("password")
+        user = CustomUser(**validated_data)
+        user.set_password(password)  # 🔐 захешуємо пароль
+        user.save()
+        return user
 
-    def validate_role(self, value):
-        forbidden_roles = ['admin', 'moderator']
-        if value in forbidden_roles:
-            raise serializers.ValidationError("You cannot assign this role.")
-        return value
+    # def validate_role(self, value):
+    #     forbidden_roles = ['admin', 'moderator']
+    #     if value in forbidden_roles:
+    #         raise serializers.ValidationError("You cannot assign this role.")
+    #     return value
 
 
     # def create(self, validated_data):
