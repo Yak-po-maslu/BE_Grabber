@@ -45,6 +45,7 @@ urlpatterns = [
     path('favorites/', FavoriteAdAddView.as_view(), name='add_favorite'),
     path('favorites/<int:product_id>/', FavoriteAdRemoveView.as_view(), name='remove_favorite'),
     path('products/<int:id>/reviews/', ProductReviewView.as_view(), name='product-reviews'),
+    path('products/<int:id>/comments/', ProductCommentView.as_view(), name='product-comments')
     path('products/<int:id>/comments/', ProductCommentView.as_view(), name='product-comments'),
     path('upload-image/', UploadImageView.as_view(), name='upload-image'),
     path('images/delete/', DeleteAdImageView.as_view(), name='delete-ad-image'),
