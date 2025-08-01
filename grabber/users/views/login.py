@@ -41,7 +41,8 @@ class AsyncCookieViewLogin(AsyncAPIView):
 
 
         # 2. Аутентификация пользователя через sync_to_async
-        user = await sync_to_async(authenticate)(email=email, password=password)
+        user = await sync_to_async(authenticate)(request, username=email, password=password)
+
 
         # 3. Если пользователь не найден — ошибка
         if user is None:
