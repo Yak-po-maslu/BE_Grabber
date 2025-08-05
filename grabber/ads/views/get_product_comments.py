@@ -8,6 +8,7 @@ from ads.serializers.product_comment_serializer import ProductCommentSerializer
 
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
+from django.db.models import Avg
 
 
 class CommentThrottle(UserRateThrottle):
@@ -20,12 +21,25 @@ class ProductCommentView(APIView):
 
     @swagger_auto_schema(
         operation_summary="Отримати коментарі до товару",
-        responses={200: ProductCommentSerializer(many=True)}
+       responses={200: openapi.Schema(  # 👇 уточнена схема
+            type=openapi.TYPE_OBJECT,
+            properties={
+                'average_rating': openapi.Schema(type=openapi.TYPE_NUMBER, format='float'),
+                'comments': openapi.Schema(type=openapi.TYPE_ARRAY, items=openapi.Items(type=openapi.TYPE_OBJECT)),
+            }
+        )}
     )
     def get(self, request, id):
         comments = ProductComment.objects.filter(product_id=id).order_by('-created_at')
         serializer = ProductCommentSerializer(comments, many=True)
-        return Response(serializer.data)
+
+        average_rating = ProductComment.objects.filter(product_id=id).aggregate(avg=Avg('rating'))['avg']
+        average_rating = round(average_rating, 1) if average_rating is not None else None
+
+        return Response({
+            'average_rating': average_rating,
+            'comments': serializer.data
+        })
 
     @swagger_auto_schema(
         operation_summary="Додати новий публічний коментар до товару",
