@@ -1,6 +1,7 @@
 
 from django.urls import path
 from users.views.add_to_cart import AddToCartView, RemoveFromCartView
+from .views.change_email import ChangeEmailView
 from .views import (
     login,
     register,
@@ -37,4 +38,5 @@ urlpatterns = [
     # add to cart and remove from cart
     path('cart/add', AddToCartView.as_view(), name='cart-add'),
     path('cart/remove', RemoveFromCartView.as_view(), name='cart-remove'),
+    path('change-email/', ChangeEmailView.as_view(), name='change-email')
 ]
