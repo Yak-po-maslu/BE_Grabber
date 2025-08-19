@@ -1,6 +1,5 @@
 from rest_framework import serializers
 from ads.models import Ad
-# serializers.py
 import decimal
 from ctypes import cast
 from decimal import Decimal
@@ -35,18 +34,6 @@ class UpdateAdSerializer(serializers.ModelSerializer):
         help_text="Статус объявления: 'draft' или 'pending'.",
         required=False,
     )
-
-    # category_name = serializers.CharField(
-    #   help_text="Категория объявления",
-    #  required=True,
-    # write_only=True,
-
-    # )
-
-    # category = serializers.CharField(
-    #    source='category.name',
-    #
-    # )
 
     class Meta:
         model = Ad

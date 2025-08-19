@@ -9,6 +9,11 @@ from ads.views.delete_category import DeleteCategoryView
 from ads.views.favorite import FavoriteAdAddView, FavoriteAdRemoveView, FavoriteAdListView
 from ads.views.get_product_comments import ProductCommentView
 from ads.views.upload_image_view import UploadImageView, DeleteAdImageView
+from ads.views.get_subcategories import GetSubCategoriesAPIView
+from ads.views.create_subcategory import CreateSubCategoryAPIView
+from ads.views.edit_subcategory import EditSubCategoryAPIView
+from ads.views.add_image_to_subcategory import AddImageToSubCategoryAPIView
+from ads.views.delete_subcategory import DeleteSubCategoryAPIView
 from .views import (
     create_ad,
     get_moderation,
@@ -46,5 +51,12 @@ urlpatterns = [
     path('products/<int:id>/comments/', ProductCommentView.as_view(), name='product-comments'),
     path('upload-image/', UploadImageView.as_view(), name='upload-image'),
     path('images/delete/', DeleteAdImageView.as_view(), name='delete-ad-image'),
-    path('favorite/', FavoriteAdListView.as_view(), name='favorite-ads-list')
+    path('favorite/', FavoriteAdListView.as_view(), name='favorite-ads-list'),
+    path("subcategories/", GetSubCategoriesAPIView.as_view(), name="get_subcategories"),
+    path("subcategories/create/", CreateSubCategoryAPIView.as_view(), name="create_subcategory"),
+    path("subcategories/<int:subcategory_id>/edit/", EditSubCategoryAPIView.as_view(), name="edit_subcategory"),
+    path("subcategories/<int:subcategory_id>/image/", AddImageToSubCategoryAPIView.as_view(), name="add_image_to_subcategory"),
+    path("subcategories/<int:subcategory_id>/delete/", DeleteSubCategoryAPIView.as_view(), name="delete_subcategory")
+
+    
 ]
