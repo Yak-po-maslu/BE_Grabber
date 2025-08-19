@@ -57,6 +57,4 @@ urlpatterns = [
     path("subcategories/<int:subcategory_id>/edit/", EditSubCategoryAPIView.as_view(), name="edit_subcategory"),
     path("subcategories/<int:subcategory_id>/image/", AddImageToSubCategoryAPIView.as_view(), name="add_image_to_subcategory"),
     path("subcategories/<int:subcategory_id>/delete/", DeleteSubCategoryAPIView.as_view(), name="delete_subcategory")
-
-    
 ]
