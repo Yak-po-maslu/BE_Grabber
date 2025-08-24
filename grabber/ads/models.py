@@ -52,7 +52,7 @@ class Ad(models.Model):
                                   verbose_name="Category") # ✅ поле категорії
     rejection_reason = models.TextField(blank=True, null=True)
     views = models.PositiveIntegerField(default=0)
-    
+    is_popular = models.BooleanField(default=False)
     is_recommended = models.BooleanField(default=False)
 
     moderated_by = models.ForeignKey(

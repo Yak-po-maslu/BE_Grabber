@@ -14,6 +14,7 @@ from ads.views.create_subcategory import CreateSubCategoryAPIView
 from ads.views.edit_subcategory import EditSubCategoryAPIView
 from ads.views.add_image_to_subcategory import AddImageToSubCategoryAPIView
 from ads.views.delete_subcategory import DeleteSubCategoryAPIView
+from ads.views.get_popular import PopularAdsAPIView
 from .views import (
     create_ad,
     get_moderation,
@@ -56,5 +57,6 @@ urlpatterns = [
     path("subcategories/create/", CreateSubCategoryAPIView.as_view(), name="create_subcategory"),
     path("subcategories/<int:subcategory_id>/edit/", EditSubCategoryAPIView.as_view(), name="edit_subcategory"),
     path("subcategories/<int:subcategory_id>/image/", AddImageToSubCategoryAPIView.as_view(), name="add_image_to_subcategory"),
-    path("subcategories/<int:subcategory_id>/delete/", DeleteSubCategoryAPIView.as_view(), name="delete_subcategory")
+    path("subcategories/<int:subcategory_id>/delete/", DeleteSubCategoryAPIView.as_view(), name="delete_subcategory"),
+    path('popular/', PopularAdsAPIView.as_view(), name='popular_ads'),
 ]
