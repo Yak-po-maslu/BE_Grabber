@@ -52,7 +52,7 @@ class Ad(models.Model):
                                   verbose_name="Category") # ✅ поле категорії
     rejection_reason = models.TextField(blank=True, null=True)
     views = models.PositiveIntegerField(default=0)
-    
+    is_popular = models.BooleanField(default=False)
     is_recommended = models.BooleanField(default=False)
 
     moderated_by = models.ForeignKey(
@@ -66,7 +66,13 @@ class Ad(models.Model):
     def __str__(self):
         return self.title
 
-
+    def add_view(self):
+        """Додає перегляд і робить оголошення популярним, якщо переглядів достатньо"""
+        POPULAR_THRESHOLD = 3  # мінімальна кількість переглядів для популярності
+        self.views += 1
+        if self.views >= POPULAR_THRESHOLD:
+            self.is_popular = True
+        self.save(update_fields=['views', 'is_popular'])
 
 class UploadedImageV1(models.Model):
     image = models.ImageField(upload_to='uploads/', )  # путь в бакете
