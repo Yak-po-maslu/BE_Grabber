@@ -2,15 +2,16 @@ from rest_framework.generics import ListAPIView
 from django_filters.rest_framework import DjangoFilterBackend
 from django.views.decorators.cache import cache_page
 from django.utils.decorators import method_decorator
-
 from ads.models import Ad
 from ads.serializers.ad import AdSerializer
 from ads.filters.filters import AdFilter  
-
-# Swagger
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
-
+from rest_framework.generics import RetrieveAPIView
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
+from ads.models import Ad
+from ads.serializers.ad import AdSerializer
 
 @method_decorator(cache_page(60 * 5), name='dispatch')
 class PopularAdsAPIView(ListAPIView):
