@@ -1,5 +1,6 @@
 from django.db import models
 from django.conf import settings
+from django.utils.text import slugify
 
 class Category(models.Model):
     name = models.CharField(max_length=100, unique=True, verbose_name="Category Name")
@@ -122,3 +123,82 @@ class ProductComment(models.Model):
 
     def __str__(self):
         return f"{self.user_name} ({self.rating}★): {self.comment_text[:20]}"
+class Attribute(models.Model):
+    TEXT = "text"
+    NUMBER = "number"
+    BOOLEAN = "bool"
+    CHOICE = "choice"       # одно-значення з переліку
+    # Якщо потрібні мульти-значення, можна додати MULTICHOICE = "multichoice"
+
+    TYPE_CHOICES = [
+        (TEXT, "Text"),
+        (NUMBER, "Number"),
+        (BOOLEAN, "Boolean"),
+        (CHOICE, "Choice"),
+    ]
+
+    category = models.ForeignKey(
+        Category, on_delete=models.CASCADE, related_name="attributes"
+    )
+    name = models.CharField(max_length=100)
+    slug = models.SlugField(max_length=120, db_index=True)
+    type = models.CharField(max_length=12, choices=TYPE_CHOICES, default=TEXT)
+
+    # додатково — для фронта:
+    unit = models.CharField(max_length=20, blank=True, default="")         # см, грн, …
+    is_filterable = models.BooleanField(default=True)
+    is_required = models.BooleanField(default=False)
+    sort_order = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        unique_together = ("category", "slug")
+        ordering = ("sort_order", "id")
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.category.name}:{self.name}"
+
+
+class AttributeOption(models.Model):
+    attribute = models.ForeignKey(
+        Attribute, on_delete=models.CASCADE, related_name="options"
+    )
+    label = models.CharField(max_length=100)
+    value = models.CharField(max_length=100)   # зручно робити value=slugified(label)
+    sort_order = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        unique_together = ("attribute", "value")
+        ordering = ("sort_order", "id")
+
+    def __str__(self):
+        return f"{self.attribute.slug} = {self.label}"
+
+
+class AdAttributeValue(models.Model):
+    ad = models.ForeignKey(Ad, on_delete=models.CASCADE, related_name="attributes")
+    attribute = models.ForeignKey(Attribute, on_delete=models.CASCADE)
+
+    # Типізовані поля — індексуються і швидко фільтруються
+    value_text = models.CharField(max_length=255, blank=True, null=True, db_index=True)
+    value_number = models.DecimalField(max_digits=14, decimal_places=4, blank=True, null=True, db_index=True)
+    value_bool = models.BooleanField(blank=True, null=True, db_index=True)
+    option = models.ForeignKey(
+        AttributeOption, null=True, blank=True, on_delete=models.SET_NULL, related_name="ad_values"
+    )
+
+    class Meta:
+        unique_together = ("ad", "attribute")
+        indexes = [
+            models.Index(fields=["attribute", "value_text"]),
+            models.Index(fields=["attribute", "value_number"]),
+            models.Index(fields=["attribute", "value_bool"]),
+            models.Index(fields=["attribute", "option"]),
+        ]
+
+    def __str__(self):
+        return f"{self.ad_id}:{self.attribute.slug}"
