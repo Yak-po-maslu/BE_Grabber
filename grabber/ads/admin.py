@@ -56,6 +56,6 @@ class AdAttributeValueAdmin(admin.ModelAdmin):
     search_fields = ("ad__title", "attribute__name", "value_text")
 
 
-# інші моделі без дублювання Ad
+# other models without Ad duplication
 admin.site.register(Category)
 admin.site.register(SubCategory)
