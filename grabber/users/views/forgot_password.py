@@ -11,7 +11,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
 from services.send_email import send_email
-from . import CustomUser, F_URL, token_generator
+from . import F_URL, token_generator
 from ..models import CustomUser
 from ..serializers.forgot_password import UserForgetPassword
 
@@ -37,20 +37,29 @@ class AsyncForgotPasswordView(AsyncAPIView):
         email = validated_data['email']
 
         try:
-            user = cast(CustomUser, await sync_to_async(CustomUser.objects.get)(email=email))
+            # Try to get user by email
+            user = await sync_to_async(CustomUser.objects.get)(email=email)
         except CustomUser.DoesNotExist:
-            return Response({'error': 'User with this email does not exist'}, status=status.HTTP_404_NOT_FOUND)
-
-        # Генерация токена
+            # Always return 200 for security reasons (prevent user enumeration)
+            return Response(
+                {'message': 'If the email is registered, a password reset link has been sent.'},
+                status=status.HTTP_200_OK
+            )
+        
+        # Generate password reset token and uid
         uid = urlsafe_base64_encode(force_bytes(user.pk))
         token = token_generator.make_token(user)
 
         reset_url = f"{F_URL}/reset-password/{uid}/{token}"
 
-        # Отправка письма (асинхронно или sync_to_async)
+        # Send reset email (asynchronously)
         subject = "Password Reset Request"
         message = f"Use the link below to reset your password:\n{reset_url}"
 
         await send_email(user, subject, message)
 
-        return Response({'message': 'Password reset link has been sent to your email.'}, status=status.HTTP_200_OK)
+          # Always return the same response regardless of whether the email exists
+        return Response(
+            {'message': 'If the email is registered, a password reset link has been sent.'},
+            status=status.HTTP_200_OK
+        )
