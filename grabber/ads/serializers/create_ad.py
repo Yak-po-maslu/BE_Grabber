@@ -79,7 +79,12 @@ class CreateAdsSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError('State must be draft/pending')
         return value
 
-
+    def validate_location(self, value):
+        if not value:
+            raise serializers.ValidationError('Location cannot be empty')
+        if len(value) < 2:
+            raise serializers.ValidationError('Location must be at least 2 characters long')
+        return value
 
     def create(self, validated_data):
 
