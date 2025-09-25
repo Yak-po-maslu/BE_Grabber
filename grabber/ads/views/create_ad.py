@@ -6,14 +6,11 @@ from rest_framework import status
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-
 from services.upload_one_image import UploadOneImage
 from . import user_has_permissions
 from ..models import Ad, Category
 from ..serializers.ad import AdSerializer
 from ..serializers.create_ad import CreateAdsSerializer
-
-
 import logging
 
 logger = logging.getLogger('ads')
@@ -33,17 +30,26 @@ class AsyncCreateAdsView(APIView):
                 items=openapi.Items(type=openapi.TYPE_FILE),
                 description="Список зображень",
                 required=True,
-                collectionFormat='multi',  # важный параметр для списков в multipart
+                collectionFormat='multi',
             ),
             openapi.Parameter(
                 name="category",
-                in_=openapi.IN_FORM,  # Параметр передаётся в строке запроса (например, ?category_name=books)
+                in_=openapi.IN_FORM, 
                 description="Название категории для фильтрации",
                 required=True,
                 type=openapi.TYPE_STRING,
                 example="books"
+            ),
+            openapi.Parameter(
+                name="location",
+                in_=openapi.IN_FORM,
+                description="Локация объявления",
+                required=True,
+                type=openapi.TYPE_STRING,
+                example="Київ"
             )
-        ],
+    ],
+
     )
     async def post(self, request):
         serializer = CreateAdsSerializer(data=request.data)
