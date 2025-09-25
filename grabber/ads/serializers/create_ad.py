@@ -1,14 +1,6 @@
-# serializers.py
 import decimal
-from ctypes import cast
 from decimal import Decimal
-from unicodedata import category
-
-from asgiref.sync import async_to_sync
 from rest_framework import serializers
-
-from services.upload_one_image import UploadOneImage
-from .category import CategorySerializer
 from ..models import Ad, Category
 
 
@@ -32,25 +24,15 @@ class CreateAdsSerializer(serializers.ModelSerializer):
         choices=['draft', 'pending'],
         help_text="Статус объявления: 'draft' или 'pending'."
     )
-    #category_name = serializers.CharField(
-     #   help_text="Категория объявления",
-      #  required=True,
-       # write_only=True,
-
-
-    #)
-
-   # category = serializers.CharField(
-    #    source='category.name',
-    #
-    # )
-
-
-
+    location = serializers.CharField(
+        max_length=255,
+        help_text="Локация объявления",
+        required=True
+    )
     class Meta:
         model = Ad
         fields = ['id', 'description', 'price',
-                  'title', 'status']
+                  'title', 'status','location']
 
         #extra_kwargs = {'images': {'read_only': True}}
 
@@ -97,7 +79,12 @@ class CreateAdsSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError('State must be draft/pending')
         return value
 
-
+    def validate_location(self, value):
+        if not value:
+            raise serializers.ValidationError('Location cannot be empty')
+        if len(value) < 2:
+            raise serializers.ValidationError('Location must be at least 2 characters long')
+        return value
 
     def create(self, validated_data):
 
