@@ -51,6 +51,14 @@ class Ad(models.Model):
                                   blank=True,
                                   related_name='ads',
                                   verbose_name="Category") 
+    subcategory = models.ForeignKey(
+        SubCategory,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='ads',
+        verbose_name="Subcategory"
+    )
     rejection_reason = models.TextField(blank=True, null=True)
     views = models.PositiveIntegerField(default=0)
     is_popular = models.BooleanField(default=False)
