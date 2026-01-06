@@ -11,6 +11,7 @@ from . import user_has_permissions
 from ..models import Ad, Category
 from ..serializers.ad import AdSerializer
 from ..serializers.create_ad import CreateAdsSerializer
+from ..models import SubCategory
 import logging
 
 logger = logging.getLogger('ads')
@@ -41,6 +42,14 @@ class AsyncCreateAdsView(APIView):
                 example="books"
             ),
             openapi.Parameter(
+                name="subcategory",
+                in_=openapi.IN_FORM,
+                description="Назва підкатегорії",
+                required=True,
+                type=openapi.TYPE_STRING,
+                example="textbooks"
+            ),
+            openapi.Parameter(
                 name="location",
                 in_=openapi.IN_FORM,
                 description="Локация объявления",
@@ -64,7 +73,15 @@ class AsyncCreateAdsView(APIView):
                                 data={'detail': f'category with name {category_name} not found'})
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST,data={'detail':"category name is required"})
-
+        
+        subcategory_name = request.data.get('subcategory')
+        if not subcategory_name:
+            return Response(status=status.HTTP_400_BAD_REQUEST, data={'detail': "subcategory name is required"})
+        try:
+            subcategory = await sync_to_async(SubCategory.objects.get)(name=subcategory_name, category=category)
+        except SubCategory.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND,
+                            data={'detail': f'subcategory `{subcategory_name}` not found in category `{category.name}`'})
 
         image_files = request.FILES.getlist("images")
 
